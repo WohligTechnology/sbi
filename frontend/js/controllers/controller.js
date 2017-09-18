@@ -506,6 +506,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         // $("#topic").text(data.data.data.tiledlist[0].topic);
                         // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
                     }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+						$rootScope.showMsgLoader = false;
+                        return false;
+                        // $("#topic").text(data.data.data.tiledlist[0].topic);
+                        // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                    }
                 });
             });
         };
