@@ -98,7 +98,7 @@ li.ui-menu-item {
 }
 .chatbottomtext { 
     font-size: 12px;
-    color: #ED6D05;
+    color: #1166DD;
 }
 // .animate_fade.ng-enter {
 //     transition:2.5s linear all;
@@ -134,7 +134,7 @@ li.ui-menu-item {
     position: fixed;
     bottom: 0;
     right:12px;
-    width: 42%;
+    width: 30%;
 }
 .profileDetail span { 
     font-weight:bold;
@@ -231,8 +231,8 @@ width:90%;
  }
 .panel-primary>.panel-heading {
     color: #fff;
-    background-color: #ED6D05;
-    border-color: #ED6D05;
+    background-color: #1166DD;
+    border-color: #1166DD;
 }
 .btn-group .btn-default {
     color: #fff;
@@ -294,7 +294,7 @@ background-color: #fafafa;
     position:relative;
 }
 .right .chat-body{
-    background: #EF9C6D;
+    background: #1166DD;
     color: #fff;
     border-top-right-radius: 0em;
     box-shadow: -1px 1px 1px 0px rgba(0,0,0,0.4);
@@ -321,7 +321,7 @@ background-color: #fafafa;
     right: -10px;
     width: 0;
     height: 0;
-    border: 5px solid #EF9C6D;
+    border: 5px solid #1166DD;
     border-right-color: transparent;
     border-bottom-color: transparent;
 }
@@ -372,7 +372,7 @@ div#all_questions {
     height: 320px;
     overflow-y: auto;
     overflow-x: hidden;
-    background: #EF9C6D;
+    background: #1166DD;
 }
 div#all_questions a { color:#fff; }
 .questions hr { background-color: #C0C0C0; }
@@ -387,9 +387,9 @@ div#all_questions a { color:#fff; }
     content: "> ";
 }
 .categorybreadcrumb li:first-child a {
-    color:#ED6D05;
+    color:#1166DD;
 }
-select#faqs_category { border: 1px solid #ED6D05; }
+select#faqs_category { border: 1px solid #1166DD; }
 ol.quesList { padding-left:15px; }
 .quesList li {
     color:#fff;

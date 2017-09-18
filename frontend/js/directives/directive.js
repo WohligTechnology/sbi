@@ -322,4 +322,64 @@ myApp.directive('img', function ($compile, $parse) {
             }
         };
     })
+    myApp.directive('formatPhone', function(){
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModelCtrl) {
+                function fromUser(text) {
+                    if (text) {
+                        if (text.length > 10)
+                        {
+                            alert("Please Enter 10 Digit Mobile No");
+                            mString = text.substring(0,text.length-1)
+                            //console.log(mString);
+                            $(element).val(mString);
+                            return mString;
+                        }
+                        else
+                             {
+                            var transformedInput = text.replace(/[^0-9-]/g, '');
+                            if (transformedInput !== text) {
+                                ngModelCtrl.$setViewValue(transformedInput);
+                                ngModelCtrl.$render();
+                            }
+                            return transformedInput;
+                        }
+                    }
+                    return undefined;
+                }
+                ngModelCtrl.$parsers.push(fromUser);
+            }
+        };
+    })
+    myApp.directive('formatPolicy', function(){
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModelCtrl) {
+                function fromUser(text) {
+                    if (text) {
+                        if (text.length > 16)
+                        {
+                            alert("Please Enter 16 Digit Policy No");
+                            mString = text.substring(0,text.length-1)
+                            //console.log(mString);
+                            $(element).val(mString);
+                            return mString;
+                        }
+                        else
+                             {
+                            var transformedInput = text.replace(/[^0-9-]/g, '');
+                            if (transformedInput !== text) {
+                                ngModelCtrl.$setViewValue(transformedInput);
+                                ngModelCtrl.$render();
+                            }
+                            return transformedInput;
+                        }
+                    }
+                    return undefined;
+                }
+                ngModelCtrl.$parsers.push(fromUser);
+            }
+        };
+    })
 ;
