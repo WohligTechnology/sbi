@@ -15,6 +15,15 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
             }).success(callback);
         },
         // This is a demo Service for POST Method.
+        login:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "init/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
         policysubmit:function(formData, callback) {
             
             return $http({
@@ -28,6 +37,15 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
             
             return $http({
                 url:adminurl2+ "outFormMob/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        getDthlinkRes:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outDTL/"+formData.user_id+"/",
                 headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
                 method: 'POST',
                 data: $.param(formData)

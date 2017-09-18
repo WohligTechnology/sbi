@@ -56,8 +56,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         //console.log(Browser.getParentUrl());
         $rootScope.validDomain = false;
         var referrerurl = $scope.getParentUrl();
-        if(referrerurl == null || referrerurl == "http://104.46.103.162:8096/" || referrerurl == "http://localhost/flatlab/")
-            $rootScope.validDomain = true;
+        // if(referrerurl == null || referrerurl == "http://104.46.103.162:8096/" || referrerurl == "http://localhost/flatlab/")
+        //     $rootScope.validDomain = true;
+        $rootScope.validDomain = true;
         //$rootScope.validDomain = true;
         // $rootScope.languagelist = [
         //     {id:"en" , name:"English"},
@@ -89,24 +90,33 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             $rootScope.isLoggedin = true;
         $scope.login = function(name,email)
         {
-            /*
-            $scope.formData = {username:username,password:sha256_digest(password),csrfmiddlewaretoken:token};
+            $scope.formData = {uname:name,email:email,user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id")};
             
             apiService.login($scope.formData).then(function (callback){
                 //console.log(callback);
-            });*/
-            $.jStorage.flush();
-            if(email == "atul@gmail.com" && name == "Atul")
-            {
-                $.jStorage.set("id", 1);
-                $.jStorage.set("name", "Atul");
-                $.jStorage.set("email", email);
-                $.jStorage.set("isLoggedin", true);
-                $rootScope.isLoggedin = true;
-            }
-            else {
-                $scope.loginerror = -1;
-            }
+                $.jStorage.flush();
+                if(email == "atul@gmail.com" && name == "Atul")
+                {
+                    angular.forEach(data.data.tiledlist, function(value, key) {
+                        if(value.type=="DTHyperlink")
+                        {
+                            $rootScope.DthResponse(0,data.data);
+                            
+                            // $("#topic").text(data.data.data.tiledlist[0].topic);
+                            // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        }
+                    });
+                    $.jStorage.set("id", 1);
+                    $.jStorage.set("name", name);
+                    $.jStorage.set("email", email);
+                    $.jStorage.set("isLoggedin", true);
+                    $rootScope.isLoggedin = true;
+                }
+                else {
+                    $scope.loginerror = -1;
+                }
+            });
+            
         };
         $scope.logout = function()
         {
@@ -563,7 +573,6 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     $rootScope.autolistvalue = $('ul#ui-id-1').find("li:first").attr("data-value");
                     $rootScope.answers = $(storeTarget).attr("data-answers");
 		    	}
-                console.log($rootScope.answers);
                 return;
             }
             if(e.which == 38 ) // Up arrow
@@ -600,7 +609,6 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 {
                     if($(".chatinput").val() != "")
                     {
-                        console.log("null",$rootScope.autolistid);
                         $(".chatinput").val("");
                         $rootScope.pushMsg("",$rootScope.chatText);
                         $rootScope.chatText="";
@@ -622,6 +630,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 {
                     $rootScope.autocompletelist = [];
                     $rootScope.chatText = "";
+                    $rootScope.autolistid=="";
+                    $rootScope.autolistvalue = "";
+                    $rootScope.answers = "";
                 }
                 
             }
