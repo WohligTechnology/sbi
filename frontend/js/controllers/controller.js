@@ -26,7 +26,46 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         
 
     })
+    .controller('SpeechRecognitionController', function ($scope, $rootScope) {
 
+        var vm = this;
+
+        vm.displayTranscript = displayTranscript;
+        vm.transcript = '';
+        function displayTranscript() {
+            vm.transcript = $rootScope.transcript;
+            //console.log("transcript",$rootScope.transcript);
+            $(".chatinput").val($rootScope.transcript);
+            $rootScope.pushMsg(0,$rootScope.transcript,"");
+            //This is just to refresh the content in the view.
+            if (!$scope.$$phase) {
+                $scope.$digest();
+                console.log("transcript",$rootScope.transcript);
+            }
+        }
+        $rootScope.startspeech = function() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            console.log("new func");
+        // recognition.onresult = function(event) 
+            { 
+                console.log(event); 
+            }
+            recognition.start();
+        };
+        /**
+         * Handle the received transcript here.
+         * The result from the Web Speech Recognition will
+         * be set inside a $rootScope variable. You can use it
+         * as you want.
+         */
+        $rootScope.speechStarted = function() {
+            console.log("speech Started");
+        };
+    
+
+    })
     .controller('ChatCtrl', function ($scope, $rootScope,TemplateService, $timeout,$http,apiService,$state,$sce,$cookies,$location,$compile,$uibModal) {
         $rootScope.regEx="/^[0-9]{10,10}$/;"
         var url = $location.absUrl().split('?')[0];
@@ -72,17 +111,32 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.loginerror=0;
         $rootScope.isLoggedin = false;
         $rootScope.hasPolicyNo = false;
+        
+        $rootScope.haveclaim = function(v,index) {
+            console.log(v);
+            console.log(index);
+            if(v == 1)
+            {
+                $(".showclaimnoform"+index).show();
+                
+            }
+            else
+            {
+                $(".showclaimnoform"+index).hide();
+            }
+            $(".claim_no"+index).val("");
+        };
         $rootScope.havepolicy = function(v,index) {
             console.log(v);
             console.log(index);
             if(v == 1)
             {
-                $(".showpolicynoform").show();
+                $(".showpolicynoform"+index).show();
                 
             }
             else
             {
-                $(".showpolicynoform").hide();
+                $(".showpolicynoform"+index).hide();
             }
             $(".policy_no"+index).val("");
         };
@@ -90,17 +144,18 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             $rootScope.isLoggedin = true;
         $scope.login = function(name,email)
         {
-            $scope.formData = {uname:name,email:email,user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id")};
+            $scope.formData = {uname:name,uemail:email,user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id")};
             
             apiService.login($scope.formData).then(function (callback){
                 //console.log(callback);
                 $.jStorage.flush();
-                if(email == "atul@gmail.com" && name == "Atul")
+                //if(email == "atul@gmail.com" && name == "Atul")
+                if(callback.data)
                 {
-                    angular.forEach(data.data.tiledlist, function(value, key) {
+                    angular.forEach(callback.data.tiledlist, function(value, key) {
                         if(value.type=="DTHyperlink")
                         {
-                            $rootScope.DthResponse(0,data.data);
+                            $rootScope.DthResponse(0,callback.data);
                             
                             // $("#topic").text(data.data.data.tiledlist[0].topic);
                             // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
@@ -374,9 +429,33 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         else
             $rootScope.minimizeChatwindow();
 
-        $rootScope.policy_noSubmit = function(policyno) {
-            console.log(policyno);
-            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),policy_no:policyno};
+        $rootScope.claim_noSubmit  = function(policyno,haveclaim) {
+            console.log(haveclaim);
+            var is_exist = "Y";
+            if(haveclaim == 1)
+                is_exist = "Y";
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),policy_no:policyno,is_exist:is_exist};
+            apiService.claimsubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="mobile form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                });
+            });
+        };
+        $rootScope.policy_noSubmit = function(policyno,havepolicy) {
+            console.log(havepolicy);
+            var is_exist = "Y";
+            if(havepolicy == 1)
+                is_exist = "Y";
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),policy_no:policyno,is_exist:is_exist};
             apiService.policysubmit(formData).then(function (data){
                 angular.forEach(data.data.tiledlist, function(value, key) {
                     if(value.type=="mobile form type")
@@ -391,18 +470,18 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             });
         };
         $rootScope.mobile_noSubmit = function(mobileno) {
-            console.log(mobileno);
+            
             var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),mob_no:mobileno};
             apiService.mobilenosubmit(formData).then(function (data){
                 angular.forEach(data.data.tiledlist, function(value, key) {
-                    // if(value.type=="mobile form type")
-                    // {
-                    //     $rootScope.pushSystemMsg(0,data.data);
-                    //     $rootScope.showMsgLoader = false;
+                    if(value.type=="claim form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
                         
                         
-                    //     return false;
-                    // }
+                        return false;
+                    }
                 });
             });
         };

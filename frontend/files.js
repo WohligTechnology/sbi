@@ -35,6 +35,8 @@ module.exports = [
 
   // Directives
   'frontend/js/directives/directive.js',
+  'frontend/js/directives/SpeechRecognitionDirective.js',
+  
 
   // Filters
   'frontend/js/filters/filter.js',

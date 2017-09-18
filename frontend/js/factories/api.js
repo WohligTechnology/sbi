@@ -33,6 +33,15 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
                 data: $.param(formData)
             })
         },
+        claimsubmit:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outClaim/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
         mobilenosubmit:function(formData, callback) {
             
             return $http({

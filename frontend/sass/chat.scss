@@ -338,6 +338,11 @@ background-color: #fafafa;
     background: #a9a9a9;
     color:#000 !important;
 }
+.chatinputgroup .input-group-addon {
+    cursor: pointer;
+    width: 45px;
+    padding: 1px 2px!important;
+}
 .faqques a { color:#fff !important; }
 .left .chat-body a { color: #fff; }
 .chat li .chat-body p

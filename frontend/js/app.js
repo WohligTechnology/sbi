@@ -11,7 +11,8 @@ var myApp = angular.module('myApp', [
     'ui.swiper',
     'angularPromiseButtons',
     'toastr',
-    'ngCookies'
+    'ngCookies',
+    'app.directives',
 ])
 
 
