@@ -50,3 +50,15 @@ myApp.filter('highlight', function($sce) {
         return $sce.trustAsHtml(text)
     }
 });
+// myApp.filter('formatdate', function($filter)
+// {
+//   return function(input)
+//   {
+//     if(input == null){ return ""; } 
+  
+//     var _date = $filter('date')(new Date(input), 'MMM dd yyyy');
+  
+//     return _date.toUpperCase();
+
+//   };
+// });

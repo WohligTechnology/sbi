@@ -111,8 +111,102 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.loginerror=0;
         $rootScope.isLoggedin = false;
         $rootScope.hasPolicyNo = false;
+        $rootScope.showcreate = false;
+        $scope.policysuccess = 0;
+        $scope.editpolicysuccess = 0;
+        $scope.orderCount = 0;
+        $scope.viewPage = 1;
+        $scope.linkcount = 0;
+        $scope.policylist = [];
+        $scope.toggleedit = function(e) {
+            $('.edittoggler').hide(500);
+            if($(".editform"+e).is(':visible')) {}
+            else
+                $(".editform"+e).slideToggle(500);
+        };
+        $scope.convertdate = function(d) {
+            return (new Date(d));
+        };
+        $scope.getNumber = function(num) {
+            return new Array(num);   
+        };
+        $scope.getpage = function(page) {
+            $scope.viewPage = page;
+            $rootScope.getpolicy();
+        };
+        $scope.nextpage = function(page) {
+            $scope.viewPage = page +1;
+            $rootScope.getpolicy();
+        };
+        $scope.prevpage = function(page) {
+            $scope.viewPage = page -1;
+            $rootScope.getpolicy();
+        };
+        $scope.showcreateform = function(key,value) {
+            console.log(key,"key");
+            console.log(value,"value");
+            $rootScope.showcreate = true;
+        };
+        $rootScope.getpolicy = function() {
+            var formData = {orderCount : $scope.orderCount,viewPage:$scope.viewPage};
+            console.log(formData);
+            apiService.viewpolicy(formData).then(function (callback){
+                $scope.linkcount = (callback.data.data.count)/2;
+                //console.log($scope.linkcount);
+                var viewlist = callback.data.data.data; 
+                _.each(viewlist,function(v,k){
+                    viewlist[k].expirydate = new Date(v.expirydate); 
+                    viewlist[k].inceptiondate = new Date(v.inceptiondate); 
+                });
+                $scope.policylist =viewlist;
+            });
+        };
+        $rootScope.createpolicysubmit = function(policyno,inception_date,expiry_date,stamount,agent_name,prem_amount,agent_no,cust_no,cust_email) {
+            $scope.formData = {policyno:policyno,inception_date:inception_date,expiry_date:expiry_date,stamount:stamount,agent_name:agent_name,prem_amount:prem_amount,agent_no:agent_no,cust_no:cust_no,cust_email:cust_email,user_id:$cookies.get("session_id")};
+            console.log($scope.formData);
+            
+            apiService.createpolicy($scope.formData).then(function (callback){
+                if(callback.data)
+                {
+                    $scope.policysuccess = 1;
+                    // $scope.form.createpolicy.$setPristine();
+                    // $scope.form.createpolicy.$setUntouched();
+                    $(".createpolicy").find("input[type=text],input[type=email],input[type=number],input[type=date], textarea").val("");
+                    console.log("Success");
+                }
+                else
+                {
+                    $scope.policysuccess = -1;
+                    console.log("Fail");
+                }
+                    
+            });
+        };
+        $rootScope.editpolicysubmit = function(dataobject) {
+            $scope.formData = dataobject;
+            apiService.editpolicy($scope.formData).then(function (callback){
+                if(callback.data)
+                {
+                    $scope.editpolicysuccess = 1;
+                    // $scope.form.createpolicy.$setPristine();
+                    // $scope.form.createpolicy.$setUntouched();
+                    //$(".editpolicy").find("input[type=text],input[type=email],input[type=number],input[type=date], textarea").val("");
+                    console.log("Success");
+                }
+                else
+                {
+                    $scope.editpolicysuccess = -1;
+                    console.log("Fail");
+                }
+                    
+            });
+        };
         $rootScope.isemp = $.jStorage.get("isemp");
-        console.log($.jStorage.get("isemp"));
+        $rootScope.keys = [
+            {id:'' ,name:"Select"},
+            {id:'policy_no' ,name:"policyno"},
+            {id:'customer_email',name:"customeremail"},
+        ];
         $rootScope.haveclaim = function(v,index) {
             console.log(v);
             console.log(index);

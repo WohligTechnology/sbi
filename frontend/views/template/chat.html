@@ -230,10 +230,237 @@
                                     <div ng-if="isemp">
                                         <uib-tabset active="active">
                                             <uib-tab index="0" heading="Create">
-                                                1
+                                                <form class="form-inline" name="selectkeyform">
+                                                    
+                                                    <div class="form-group">
+                                                        <!-- <label for="exampleInputName2">Name</label> -->
+                                                        <select ng-model="s.selectedKey" class="form-control">
+                                                            <option ng-repeat="x in keys" value="{{x.id}}">{{x.name}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <!-- <label for="exampleInputEmail2">Email</label> -->
+                                                        <input type="text" class="form-control" ng-model="s.selectedValue" id="exampleInputEmail2" placeholder="">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-default" ng-click="showcreateform(s.selectedKey,s.selectedValue);">Add</button>
+                                                </form>
+                                                <form class="createpolicy" ng-if="showcreate" name="createpolicy" id="createpolicy">
+                                                    <div class="form-group" ng-if="policysuccess==1">
+                                                        <div class="pull-left col-md-12" >
+                                                            <span class="label label-success" >Data Submitted Successfully.</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="policyno" class="">Policy No</label> 
+                                                        <input type="text" class="form-control" id="policyno" name="policyno" placeholder="Policy No" ng-model="f.policyno" required>
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.policyno.$error" ng-show="createpolicy.policyno.$touched">
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter Policy No</span>
+                                                        </div> 
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="inception_date">Inception Date</label> 
+                                                        <input type="date" name="inception_date" class="form-control" id="inception_date" placeholder="" ng-model="f.inception_date" required>
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.inception_date.$error" ng-show="createpolicy.inception_date.$touched">
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter Inception date</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="expiry_date">Expiry Date</label> 
+                                                        <input type="date" name="expiry_date" class="form-control" id="expiry_date" placeholder="" required ng-model="f.expiry_date">
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.expiry_date.$error" ng-show="createpolicy.expiry_date.$touched">
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter Expiry date</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="stamount">Service TAX Amount</label> 
+                                                        <input type="number" name="stamount" class="form-control" id="stamount" placeholder="" required ng-model="f.stamount">
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.stamount.$error" ng-show="createpolicy.stamount.$touched">
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter Service TAX Amount</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="agent_name">Agent Name</label> 
+                                                        <input type="text" name="agent_name" class="form-control" id="agent_name" placeholder="" required ng-model="f.agent_name">
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.agent_name.$error" ng-show="createpolicy.agent_name.$touched">
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter Agent Name</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="prem_amount">Premium Amount</label> 
+                                                        <input type="number" name="prem_amount" class="form-control" id="prem_amount" placeholder="" required ng-model="f.prem_amount">
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.prem_amount.$error" ng-show="createpolicy.prem_amount.$touched">
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter Premium Amount</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="agent_no">Agent Contact No</label> 
+                                                        <input type="text" name="agent_no" class="form-control" id="agent_no" placeholder="" required ng-model="f.agent_no" format-phone ng-maxlength="10" ng-minlength="10">
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.agent_no.$error" ng-show="createpolicy.agent_no.$touched">
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter Agent No</span>
+                                                            <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 10 Digit No</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="cust_no">Customer Contact No</label> 
+                                                        <input type="text" name="cust_no" class="form-control" id="cust_no" placeholder="" required ng-model="f.cust_no" format-phone ng-maxlength="10" ng-minlength="10">
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.cust_no.$error" ng-show="createpolicy.cust_no.$touched" >
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter Customer Contact No</span>
+                                                            <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 10 Digit  No</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="cust_no">Customer Email</label> 
+                                                        <input type="email" name="cust_email" class="form-control" id="cust_email" placeholder="" required ng-model="f.cust_email">
+                                                        <div class="pull-right" ng-repeat="(field,value) in createpolicy.cust_email.$error" ng-show="createpolicy.cust_email.$touched">
+                                                            <span class="label label-danger" ng-if="field=='required' && value">Please Enter EmailID</span>
+                                                            <span class="label label-danger" ng-if="field=='email' && value">Please Enter Valid Email</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-if="policysuccess==-1">
+                                                        <div class="pull-right"  >
+                                                            <span class="label label-danger">Please Try Again.</span>
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-default" ng-disabled="createpolicy.$invalid" ng-click="createpolicysubmit(f.policyno,f.inception_date,f.expiry_date,f.stamount,f.agent_name,f.prem_amount,f.agent_no,f.cust_no,f.cust_email);">Add</button>
+                                                </form>
                                             </uib-tab>
-                                            <uib-tab index="1" heading="View">
-                                                2
+                                            <uib-tab index="1" heading="View" ng-click="getpolicy();">
+                                                <div class="form-group">
+                                                    <input ng-model="search.query" type="text" placeholder="Filter by" autofocus>
+                                                </div>
+                                                <table class="table table-striped">
+                                                    <thead> 
+                                                        <tr>
+                                                            <th>
+                                                                Policy No
+                                                            </th>
+                                                            <th>
+                                                                Customer Email
+                                                            </th>
+                                                            <th>
+
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="plist in policylist|filter: { policyno: search.query,customer_email:search.query }">
+                                                            <td>
+                                                                {{plist.policyno}} <br>
+                                                                <div class="edittoggler editform{{$index}}" style="display:none;">
+                                                                    <form class="editpolicy"  name="editpolicy" id="editpolicy">
+                                                                        <div class="form-group" ng-if="editpolicysuccess==1">
+                                                                            <div class="pull-left col-md-12" >
+                                                                                <span class="label label-success" >Data Edited Successfully.</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group hidden">
+                                                                            <label for="" class=""></label> 
+                                                                            <input type="text" class="form-control" id="id" name="id" placeholder="" ng-model="plist._id" required value="{{plist._id}}">
+                                                                            
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="policyno" class="">Policy No</label> 
+                                                                            <input type="text" class="form-control" id="policyno" name="policyno" placeholder="Policy No" ng-model="plist.policyno" required >
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.policyno.$error" ng-show="editpolicy.policyno.$touched">
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Policy No</span>
+                                                                            </div> 
+                                                                        </div>
+                                                                         <div class="form-group">
+                                                                            <label for="inception_date">Inception Date</label> 
+                                                                            <input type="date" name="inception_date" class="form-control" id="inception_date" placeholder="" ng-model="plist.inceptiondate" required >
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.inception_date.$error" ng-show="editpolicy.inception_date.$touched">
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Inception date</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="expiry_date">Expiry Date</label> 
+                                                                            <input type="date" name="expiry_date" class="form-control" id="expiry_date" placeholder="" required ng-model="plist.expirydate">
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.expiry_date.$error" ng-show="editpolicy.expiry_date.$touched">
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Expiry date</span>
+                                                                            </div>
+                                                                        </div> 
+                                                                        <div class="form-group">
+                                                                            <label for="stamount">Service TAX Amount</label> 
+                                                                            <input type="number" name="stamount" class="form-control" id="stamount" placeholder="" required ng-model="plist.service_tax_amount" >
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.stamount.$error" ng-show="editpolicy.stamount.$touched">
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Service TAX Amount</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="agent_name">Agent Name</label> 
+                                                                            <input type="text" name="agent_name" class="form-control" id="agent_name" placeholder="" required ng-model="plist.agent_name" >
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.agent_name.$error" ng-show="editpolicy.agent_name.$touched">
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Agent Name</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="prem_amount">Premium Amount</label> 
+                                                                            <input type="number" name="prem_amount" class="form-control" id="prem_amount" placeholder="" required ng-model="plist.premium_amount" >
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.prem_amount.$error" ng-show="editpolicy.prem_amount.$touched">
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Premium Amount</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="agent_no">Agent Contact No</label> 
+                                                                            <input type="text" name="agent_no" class="form-control" id="agent_no" placeholder="" required ng-model="plist.agent_contact_no" format-phone ng-maxlength="10" ng-minlength="10">
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.agent_no.$error" ng-show="editpolicy.agent_no.$touched">
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Agent No</span>
+                                                                                <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 10 Digit No</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="cust_no">Customer Contact No</label> 
+                                                                            <input type="text" name="cust_no" class="form-control" id="cust_no" placeholder="" required ng-model="plist.customer_contact_no" format-phone ng-maxlength="10" ng-minlength="10">
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.cust_no.$error" ng-show="editpolicy.cust_no.$touched" >
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Customer Contact No</span>
+                                                                                <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 10 Digit  No</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="cust_no">Customer Email</label> 
+                                                                            <input type="email" name="cust_email" class="form-control" id="cust_email" placeholder="" required ng-model="plist.customer_email" >
+                                                                            <div class="pull-right" ng-repeat="(field,value) in editpolicy.cust_email.$error" ng-show="editpolicy.cust_email.$touched">
+                                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter EmailID</span>
+                                                                                <span class="label label-danger" ng-if="field=='email' && value">Please Enter Valid Email</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" ng-if="editpolicysuccess==-1">
+                                                                            <div class="pull-right"  >
+                                                                                <span class="label label-danger">Please Try Again.</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <button type="submit" class="btn btn-default" ng-disabled="editpolicy.$invalid" ng-click="editpolicysubmit(plist);">Edit</button>
+                                                                    </form>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{plist.customer_email}}
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-xs btn-primary" type="button" ng-click="toggleedit($index);">
+                                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <nav aria-label="Page navigation">
+                                                    <ul class="pagination">
+                                                        <li >
+                                                            <a href="#" aria-label="Previous" ng-click="prevpage(viewPage);">
+                                                                <span aria-hidden="true">&laquo;</span>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-repeat="n in getNumber(linkcount) track by $index">
+                                                            <a href="#" ng-click="getpage($index+1);">{{$index+1}}</a>
+                                                        </li>
+                                                       <li ng-if="(linkcount/viewPage) > 1">
+                                                            <a href="#" aria-label="Next" ng-click="nextpage(viewPage);">
+                                                                <span aria-hidden="true">&raquo;</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
                                             </uib-tab>
                                         </uib-tabset>
                                     </div>

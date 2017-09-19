@@ -12,23 +12,62 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $.jStorage.set("csrftoken",response.data.csrf_token);
                 //console.log(response.data);
             });
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position){
-                    $scope.$apply(function(){
-                        $scope.position = position;
-                        console.log(position);
-                    });
-                });
-            }
+            // if (navigator.geolocation) {
+            //     navigator.geolocation.getCurrentPosition(function(position){
+            //         $scope.$apply(function(){
+            //             $scope.position = position;
+            //             console.log(position);
+            //         });
+            //     });
+            // }
         });
         
 
         
 
     })
+    .controller('SpeechRecognitionController', function ($scope, $rootScope) {
 
+        var vm = this;
+
+        vm.displayTranscript = displayTranscript;
+        vm.transcript = '';
+        function displayTranscript() {
+            vm.transcript = $rootScope.transcript;
+            //console.log("transcript",$rootScope.transcript);
+            $(".chatinput").val($rootScope.transcript);
+            $rootScope.pushMsg(0,$rootScope.transcript,"");
+            //This is just to refresh the content in the view.
+            if (!$scope.$$phase) {
+                $scope.$digest();
+                console.log("transcript",$rootScope.transcript);
+            }
+        }
+        $rootScope.startspeech = function() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            console.log("new func");
+        // recognition.onresult = function(event) 
+            { 
+                console.log(event); 
+            }
+            recognition.start();
+        };
+        /**
+         * Handle the received transcript here.
+         * The result from the Web Speech Recognition will
+         * be set inside a $rootScope variable. You can use it
+         * as you want.
+         */
+        $rootScope.speechStarted = function() {
+            console.log("speech Started");
+        };
+    
+
+    })
     .controller('ChatCtrl', function ($scope, $rootScope,TemplateService, $timeout,$http,apiService,$state,$sce,$cookies,$location,$compile,$uibModal) {
-        
+        $rootScope.regEx="/^[0-9]{10,10}$/;"
         var url = $location.absUrl().split('?')[0];
         // console.log(url);
         // console.log(window.parent.location);
@@ -56,8 +95,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         //console.log(Browser.getParentUrl());
         $rootScope.validDomain = false;
         var referrerurl = $scope.getParentUrl();
-        if(referrerurl == null || referrerurl == "http://104.46.103.162:8096/" || referrerurl == "http://localhost/flatlab/")
-            $rootScope.validDomain = true;
+        // if(referrerurl == null || referrerurl == "http://104.46.103.162:8096/" || referrerurl == "http://localhost/flatlab/")
+        //     $rootScope.validDomain = true;
+        $rootScope.validDomain = true;
         //$rootScope.validDomain = true;
         // $rootScope.languagelist = [
         //     {id:"en" , name:"English"},
@@ -70,32 +110,175 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.formSubmitted = false;
         $scope.loginerror=0;
         $rootScope.isLoggedin = false;
+        $rootScope.hasPolicyNo = false;
+        $rootScope.showcreate = false;
+        $scope.policysuccess = 0;
+        $scope.editpolicysuccess = 0;
+        $scope.orderCount = 0;
+        $scope.viewPage = 1;
+        $scope.linkcount = 0;
+        $scope.policylist = [];
+        $scope.toggleedit = function(e) {
+            $('.edittoggler').hide(500);
+            if($(".editform"+e).is(':visible')) {}
+            else
+                $(".editform"+e).slideToggle(500);
+        };
+        $scope.convertdate = function(d) {
+            return (new Date(d));
+        };
+        $scope.getNumber = function(num) {
+            return new Array(num);   
+        }
+        $scope.nextpage = function(page) {
+            console.log(page);
+            $scope.viewPage = page +1;
+            $rootScope.getpolicy();
+        };
+        $scope.showcreateform = function(key,value) {
+            console.log(key,"key");
+            console.log(value,"value");
+            $rootScope.showcreate = true;
+        };
+        $rootScope.getpolicy = function() {
+            var formData = {orderCount : $scope.orderCount,viewPage:$scope.viewPage};
+            console.log(formData);
+            apiService.viewpolicy(formData).then(function (callback){
+                $scope.linkcount = (callback.data.data.count)/2;
+                //console.log($scope.linkcount);
+                var viewlist = callback.data.data.data; 
+                _.each(viewlist,function(v,k){
+                    viewlist[k].expirydate = new Date(v.expirydate); 
+                    viewlist[k].inceptiondate = new Date(v.inceptiondate); 
+                });
+                $scope.policylist =viewlist;
+            });
+        };
+        $rootScope.createpolicysubmit = function(policyno,inception_date,expiry_date,stamount,agent_name,prem_amount,agent_no,cust_no,cust_email) {
+            $scope.formData = {policyno:policyno,inception_date:inception_date,expiry_date:expiry_date,stamount:stamount,agent_name:agent_name,prem_amount:prem_amount,agent_no:agent_no,cust_no:cust_no,cust_email:cust_email,user_id:$cookies.get("session_id")};
+            console.log($scope.formData);
+            
+            apiService.createpolicy($scope.formData).then(function (callback){
+                if(callback.data)
+                {
+                    $scope.policysuccess = 1;
+                    // $scope.form.createpolicy.$setPristine();
+                    // $scope.form.createpolicy.$setUntouched();
+                    $(".createpolicy").find("input[type=text],input[type=email],input[type=number],input[type=date], textarea").val("");
+                    console.log("Success");
+                }
+                else
+                {
+                    $scope.policysuccess = -1;
+                    console.log("Fail");
+                }
+                    
+            });
+        };
+        $rootScope.editpolicysubmit = function(dataobject) {
+            $scope.formData = dataobject;
+            apiService.editpolicy($scope.formData).then(function (callback){
+                if(callback.data)
+                {
+                    $scope.editpolicysuccess = 1;
+                    // $scope.form.createpolicy.$setPristine();
+                    // $scope.form.createpolicy.$setUntouched();
+                    //$(".editpolicy").find("input[type=text],input[type=email],input[type=number],input[type=date], textarea").val("");
+                    console.log("Success");
+                }
+                else
+                {
+                    $scope.editpolicysuccess = -1;
+                    console.log("Fail");
+                }
+                    
+            });
+        };
+        $rootScope.isemp = $.jStorage.get("isemp");
+        $rootScope.keys = [
+            {id:'' ,name:"Select"},
+            {id:'policy_no' ,name:"policyno"},
+            {id:'customer_email',name:"customeremail"},
+        ];
+        $rootScope.haveclaim = function(v,index) {
+            console.log(v);
+            console.log(index);
+            if(v == 1)
+            {
+                $(".showclaimnoform"+index).show();
+                
+            }
+            else
+            {
+                $(".showclaimnoform"+index).hide();
+            }
+            $(".claim_no"+index).val("");
+        };
+        $rootScope.havepolicy = function(v,index) {
+            console.log(v);
+            console.log(index);
+            if(v == 1)
+            {
+                $(".showpolicynoform"+index).show();
+                
+            }
+            else
+            {
+                $(".showpolicynoform"+index).hide();
+            }
+            $(".policy_no"+index).val("");
+        };
         if($.jStorage.get("isLoggedin"))
             $rootScope.isLoggedin = true;
-        $scope.login = function(email,name)
+        $scope.login = function(name,email)
         {
-            /*
-            $scope.formData = {username:username,password:sha256_digest(password),csrfmiddlewaretoken:token};
+            $scope.formData = {uname:name,uemail:email,user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id")};
             
             apiService.login($scope.formData).then(function (callback){
                 //console.log(callback);
-            });*/
-            $.jStorage.flush();
-            if(email == "atul@gmail.com" && name == "Atul")
-            {
-                $.jStorage.set("id", 1);
-                $.jStorage.set("name", "Atul");
-                $.jStorage.set("email", email);
-                $.jStorage.set("isLoggedin", true);
-                $rootScope.isLoggedin = true;
-            }
-            else {
-                $scope.loginerror = -1;
-            }
+                $.jStorage.flush();
+                //if(email == "atul@gmail.com" && name == "Atul")
+                if(callback.data)
+                {
+                    angular.forEach(callback.data.tiledlist, function(value, key) {
+                        if(value.type=="DTHyperlink")
+                        {
+                            $rootScope.DthResponse(0,callback.data);
+                            $rootScope.isemp = false;
+                            $.jStorage.set("isemp",false);
+                            // $("#topic").text(data.data.data.tiledlist[0].topic);
+                            // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        }
+                        if(value.type=="employee form")
+                        {
+                            $rootScope.pushSystemMsg(0,callback.data);
+                            $rootScope.isemp = true;
+                            $.jStorage.set("isemp",true);
+                            // $("#topic").text(data.data.data.tiledlist[0].topic);
+                            // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        }
+                        else
+                        {
+                            $rootScope.isemp = false;
+                            $.jStorage.set("isemp",false);
+                        }
+                    });
+                    $.jStorage.set("id", 1);
+                    $.jStorage.set("name", name);
+                    $.jStorage.set("email", email);
+                    $.jStorage.set("isLoggedin", true);
+                    $rootScope.isLoggedin = true;
+                }
+                else {
+                    $scope.loginerror = -1;
+                }
+            });
+            
         };
         $scope.logout = function()
         {
             $.jStorage.flush();
+            $rootScope.isemp = false;
             $rootScope.isLoggedin = false;
             $rootScope.chatlist = [];
             $.jStorage.set("showchat",false);
@@ -174,7 +357,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 });
             }
             //var languageid = $.jStorage.get("language");
-            $scope.formData = {"text": chatText,"language":languageid };
+            //$scope.formData = {"text": chatText,"language":languageid };
             // apiService.translate($scope.formData).then( function (response) {
             //     //$(".chatinput").val(response.data.data);
             //     console.log(response.data.data);
@@ -317,17 +500,20 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             $rootScope.chatmsg = value;
             $rootScope.answers = answer;
             console.log(answer);
+            
             $rootScope.autocompletelist = [];
             $rootScope.chatlist.push({id:id,msg:value,position:"right",curTime: $rootScope.getDatetime()});
             //console.log("msgid="+id+"chatmsg="+$rootScope.msgSelected);
             var automsg = { Text: answer , type : "SYS_AUTO"};
-            $rootScope.pushSystemMsg(id,automsg);
+            $rootScope.chatlist.push({id:id,msg:automsg,position:"left",curTime: $rootScope.getDatetime()});
             $rootScope.showMsgLoader = false;
             //$.jStorage.set("chatlist",$rootScope.chatlist);
             $rootScope.msgSelected = false;
             $rootScope.chatmsgid = "";
             $rootScope.chatmsg = "";
             $rootScope.answers = "";
+            $rootScope.chatText="";
+            $(".chatinput").val("");
             $rootScope.scrollChatWindow();
         };
         $rootScope.pushQuestionMsg = function(id,value) {
@@ -346,33 +532,98 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         else
             $rootScope.minimizeChatwindow();
 
-        $rootScope.policy_noSubmit = function(policyno) {
-            console.log(policyno);
+        $rootScope.claim_noSubmit  = function(policyno,haveclaim) {
+            console.log(haveclaim);
+            var is_exist = "Y";
+            if(haveclaim == 1)
+                is_exist = "Y";
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),policy_no:policyno,is_exist:is_exist};
+            apiService.claimsubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="mobile form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                });
+            });
+        };
+        $rootScope.policy_noSubmit = function(policyno,havepolicy) {
+            console.log(havepolicy);
+            var is_exist = "Y";
+            if(havepolicy == 1)
+                is_exist = "Y";
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),policy_no:policyno,is_exist:is_exist};
+            apiService.policysubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="mobile form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                });
+            });
+        };
+        $rootScope.mobile_noSubmit = function(mobileno) {
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),mob_no:mobileno};
+            apiService.mobilenosubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="claim form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                });
+            });
         };
         $rootScope.getDthlinkRes = function(colno,lineno,dthlink) {
             //console.log(colno,lineno,dthlink);
-            mysession = $.jStorage.get("sessiondata");
+            //mysession = $.jStorage.get("sessiondata");
+            var mysession = {};
             //console.log(mysession);
             mysession.DTHlink=dthlink;
             mysession.DTHline=lineno;
             mysession.DTHcol=colno;
             formData = mysession;
+            formData.csrfmiddlewaretoken=$rootScope.getCookie("csrftoken");
+            formData.user_id=$cookies.get("session_id");
             //console.log(formData);
             apiService.getDthlinkRes(formData).then(function (data){
-                angular.forEach(data.data.data.tiledlist, function(value, key) {
+                angular.forEach(data.data.tiledlist, function(value, key) {
                     if(value.type=="DTHyperlink")
                     {
-                        $rootScope.DthResponse(0,data.data.data);
+                        $rootScope.DthResponse(0,data.data);
                         
-                        $("#topic").text(data.data.data.tiledlist[0].topic);
-                        $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        // $("#topic").text(data.data.data.tiledlist[0].topic);
+                        // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
                     }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+						$rootScope.showMsgLoader = false;
+                        return false;
+                        // $("#topic").text(data.data.data.tiledlist[0].topic);
+                        // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                    }
+                    
                 });
             });
         };
         $rootScope.DthResponse = function(id,data) {
-            // $rootScope.pushSystemMsg(id,data);
-            // $rootScope.showMsgLoader = false; 
+            $rootScope.pushSystemMsg(id,data);
+            $rootScope.showMsgLoader = false; 
             // $rootScope.selectTabIndex = 0;
             
             // //var node_data = {"node_data": {"elements": ["Guidelines", "Shifting", "Accessibility", "Charges"], "element_values": ["<br>To define general guidelines to be followed by Branches while processing Account Closure. <br><br> Branch should attempt for retention of account before closing the account as opening a new account is expensive. <br><br> Channels through which Account Closure request is received: <br> 1. Customers In Person (CIP) who walk in to the Branch <br>\n2. Representatives/Bearer of customers who walk in to the Branch <br>\n3. Mail / Drop Box <br><br> Check Documentation and Signature Protocol <br><br> Check Mode of Payment for closure Proceeds <br><br> Check for Customer Handling on receipt of request <br><br> Check Process at Branch \u2013Checks during acceptance of closure form <br><br> Check Process at Branch- Post acceptance of Closure form <br><br> ", "<br>Customer is unwilling to give us another chance  <br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance. <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>In case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\nCustomer will pay the  necessary amount to regularize the account <br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly. <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel <br><br>\n4) Branch to journal of the attempts made to retain the customer. <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.", "<br>If customer is closing his/ her account due to inconvenient accessibility, solutions like Home Banking, Beat Pick up facility, etc. should be re-iterated. <br>\nIn case customer has an account which he/ she is not eligible for an accessibility offering he/ she is interested in, an upgraded account should be offered especially if account balances justify it (ensure that new AMB/AQBs and NMCs are communicated clearly).Customer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d.  <br><br> This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer is unwilling to give another chance: < <br><br>> Customer will pay the  necessary amount to regularize the account  <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br> \n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.C2", "<br>1) Customer expresses concerns on high charges, ascertain the nature of charges levied and recommend an upgraded account where required (e.g. if customer finds DD charges high, up-sell to an account with a higher free DD limit or an account offering At Par cheque facility if usage is on our locations). Communicate the AMB/AQB and NMC to customer clearly. <br><br>\n2) The account can be upgraded/downgrade as per customer requirement by retaining the same account Number  <br><br>\n3) Branch can also explain the benefits of Basic/Small Account and offer conversion to the said  account as it will address their inability to maintain the account.  <br><br>\nCustomer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront.  <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.   <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer will pay the  necessary amount to regularize the account   <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br>\n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\n"]}};
@@ -448,6 +699,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             
                             return false;
                         }
+                        if(value.type=="mobile form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false;
+                        }
                         // if(value.type=="rate card")
                         // {
                         //     $rootScope.pushSystemMsg(0,data.data.data);
@@ -494,15 +753,17 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     $(".chatinput").val(storeTarget.text());
                     $rootScope.autolistid = $(storeTarget).attr("data-id");
                     $rootScope.autolistvalue = $(storeTarget).attr("data-value");
+                    $rootScope.answers = $(storeTarget).attr("data-answers");
                 }
                 else
                 {
                     $('ul#ui-id-1').find("li:first").focus().addClass("active");
+                    var storeTarget	= $('ul#ui-id-1').find("li.active");
                     $(".chatinput").val($('ul#ui-id-1').find("li:first").text());
                     $rootScope.autolistid = $('ul#ui-id-1').find("li:first").attr("data-id");
                     $rootScope.autolistvalue = $('ul#ui-id-1').find("li:first").attr("data-value");
+                    $rootScope.answers = $(storeTarget).attr("data-answers");
 		    	}
-
                 return;
             }
             if(e.which == 38 ) // Up arrow
@@ -519,6 +780,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 else
                 {
                     $('ul#ui-id-1').find("li:last").focus().addClass("active");
+                    var storeTarget	= $('ul#ui-id-1').find("li.active");
                     $(".chatinput").val($('ul#ui-id-1').find("li:last").text());
                     $rootScope.autolistid = $('ul#ui-id-1').find("li:last").attr("data-id");
                     $rootScope.autolistvalue = $('ul#ui-id-1').find("li:last").attr("data-value");
@@ -529,11 +791,15 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             }
             if(e.which == 13) // Enter
             {
-                if($rootScope.autolistid=="" || $rootScope.autolistid == null)
+                if( $rootScope.answers )
+                {
+                    $rootScope.pushAutoMsg($rootScope.autolistid,$rootScope.chatText,$rootScope.answers);
+                    $rootScope.autocompletelist = [];
+                }
+                else if($rootScope.autolistid=="" || $rootScope.autolistid == null)
                 {
                     if($(".chatinput").val() != "")
                     {
-                        console.log("null",$rootScope.autolistid);
                         $(".chatinput").val("");
                         $rootScope.pushMsg("",$rootScope.chatText);
                         $rootScope.chatText="";
@@ -555,6 +821,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 {
                     $rootScope.autocompletelist = [];
                     $rootScope.chatText = "";
+                    $rootScope.autolistid=="";
+                    $rootScope.autolistvalue = "";
+                    $rootScope.answers = "";
                 }
                 
             }
@@ -565,7 +834,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.likeChatClick = function(){
             $timeout(function(){
                 $('span.thumbsup').css("color", "#39E61F");
-                $('.thumbsdown').css("color", "#ED6D05");
+                $('.thumbsdown').css("color", "#1166DD");
             },200);
         };
         $rootScope.$dislikemodalInstance = {};
@@ -580,13 +849,13 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             });
             $timeout(function(){ 
                 $('span.thumbsdown').css("color", "#F32525");
-                $('.thumbsup').css("color", "#ED6D05");
+                $('.thumbsup').css("color", "#1166DD");
             },200);
         };
         $rootScope.dislikeCancel = function() {
             //console.log("dismissing");
             $scope.$dislikemodalInstance.dismiss('cancel');
-            $('span.thumbsdown').css("color", "#ED6D05");
+            $('span.thumbsdown').css("color", "#1166DD");
         };
         $rootScope.dislikesuggestionsubmit = function(suggestion){
             console.log("suggestion",suggestion);
@@ -597,7 +866,31 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             },500);
             $('span.thumbsdown').css("color", "#ED6D05");
         };
-        
+        $scope.luhnCheck = function(val) {
+            var sum = 0;
+            for (var i = 0; i < val.length; i++) {
+                var intVal = parseInt(val.substr(i, 1));
+                if (i % 2 == 0) {
+                    intVal *= 2;
+                    if (intVal > 9) {
+                        intVal = 1 + (intVal % 10);
+                    }
+                }
+                sum += intVal;
+            }
+            return (sum % 10) == 0;
+        };
+        //ng-change="getAutocomplete(chatText);"
+        $rootScope.validatePolicyNumber = function (number) {
+            var regex = new RegExp("^[0-9]{16}$");
+            
+            if (!regex.test(number))
+            {
+                console.log(number);
+                return false;
+            }
+            $scope.luhnCheck(number);
+        }
        $timeout(function(){
             //$('#chatTabs a:last').tab('show');
        },200);
