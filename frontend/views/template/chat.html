@@ -124,7 +124,8 @@
                                                         </ng-bind-html>
                                                         
                                                     </p>
-                                                </div> 
+                                                </div>
+                                                
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='DTHyperlink'">
                                                     
                                                     <ng-bind-html ng-if="chatRes.Text != ''" ng-bind-html="chatRes.Text|newlines">
@@ -141,6 +142,7 @@
                                                         {{dthlink}}
                                                     </div>
                                                 </div>
+                                                
                                                 <!-- <div class="chatType" ng-if="list.msg.tiledlist[0].type==='Instruction'">
                                             
                                                                                                         
@@ -223,7 +225,19 @@
                                             </small>
                                         </p>
                                     </div>
-                                </li>    
+                                </li>
+                                <div class="chatType" ng-if="isemp">
+                                    <div ng-if="isemp">
+                                        <uib-tabset active="active">
+                                            <uib-tab index="0" heading="Create">
+                                                1
+                                            </uib-tab>
+                                            <uib-tab index="1" heading="View">
+                                                2
+                                            </uib-tab>
+                                        </uib-tabset>
+                                    </div>
+                                </div>     
                             </ul>
                             
                         </div>

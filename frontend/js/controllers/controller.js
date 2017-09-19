@@ -111,7 +111,8 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.loginerror=0;
         $rootScope.isLoggedin = false;
         $rootScope.hasPolicyNo = false;
-        
+        $rootScope.isemp = $.jStorage.get("isemp");
+        console.log($.jStorage.get("isemp"));
         $rootScope.haveclaim = function(v,index) {
             console.log(v);
             console.log(index);
@@ -156,9 +157,23 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         if(value.type=="DTHyperlink")
                         {
                             $rootScope.DthResponse(0,callback.data);
-                            
+                            $rootScope.isemp = false;
+                            $.jStorage.set("isemp",false);
                             // $("#topic").text(data.data.data.tiledlist[0].topic);
                             // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        }
+                        if(value.type=="employee form")
+                        {
+                            $rootScope.pushSystemMsg(0,callback.data);
+                            $rootScope.isemp = true;
+                            $.jStorage.set("isemp",true);
+                            // $("#topic").text(data.data.data.tiledlist[0].topic);
+                            // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        }
+                        else
+                        {
+                            $rootScope.isemp = false;
+                            $.jStorage.set("isemp",false);
                         }
                     });
                     $.jStorage.set("id", 1);
@@ -176,6 +191,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.logout = function()
         {
             $.jStorage.flush();
+            $rootScope.isemp = false;
             $rootScope.isLoggedin = false;
             $rootScope.chatlist = [];
             $.jStorage.set("showchat",false);
@@ -514,6 +530,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         // $("#topic").text(data.data.data.tiledlist[0].topic);
                         // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
                     }
+                    
                 });
             });
         };

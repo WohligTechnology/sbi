@@ -1,6 +1,6 @@
 apps:
   - script: "app.js"
-    name: "Sbi - 8094"
+    name: "Sbi - 8095"
     watch: false
     args: "--prod"
     exec_mode: "cluster"
