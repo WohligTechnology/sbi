@@ -3104,7 +3104,7 @@ html[xmlns] .flexslider .slides {
 .fancybox-slide--next {
   z-index: 99995; }
 
-.fancybox-slide > * {
+.fancybox-slide > div {
   display: inline-block;
   position: relative;
   padding: 24px;
@@ -3133,7 +3133,11 @@ html[xmlns] .flexslider .slides {
   background-size: 100% 100%;
   background-repeat: no-repeat;
   -webkit-backface-visibility: hidden;
-  backface-visibility: hidden; }
+  backface-visibility: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
 
 .fancybox-can-zoomOut .fancybox-image-wrap {
   cursor: -webkit-zoom-out;
@@ -3162,7 +3166,11 @@ html[xmlns] .flexslider .slides {
   padding: 0;
   border: 0;
   max-width: none;
-  max-height: none; }
+  max-height: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
 
 .fancybox-spaceball {
   z-index: 1; }
@@ -3420,7 +3428,7 @@ html[xmlns] .flexslider .slides {
   opacity: 0.3; }
 
 /* Loading indicator */
-.fancybox-loading {
+.fancybox-slide > .fancybox-loading {
   border: 6px solid rgba(100, 100, 100, 0.4);
   border-top: 6px solid rgba(255, 255, 255, 0.6);
   border-radius: 100%;
@@ -10490,6 +10498,15 @@ button.headerbtns:focus {
 
 .text-box span {
   font-size: 10px; }
+
+.tab-content {
+  margin-top: 20px; }
+
+.searchdiv {
+  margin-top: 10px; }
+
+.form-inline .form-control {
+  max-width: 100% !important; }
 
 div#all_questions {
   margin-top: 10px;

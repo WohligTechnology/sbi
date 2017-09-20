@@ -573,7 +573,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),claim_no:claimno,is_exist:is_exist};
             apiService.claimsubmit(formData).then(function (data){
                 angular.forEach(data.data.tiledlist, function(value, key) {
-                    if(value.type=="mobile form type")
+                    if(value.type=="text")
                     {
                         $rootScope.pushSystemMsg(0,data.data);
                         $rootScope.showMsgLoader = false;
@@ -732,6 +732,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             return false;
                         }
                         if(value.type=="mobile form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false;
+                        }
+                        if(value.type=="claim form type")
                         {
                             $rootScope.pushSystemMsg(0,data.data);
                             $rootScope.showMsgLoader = false;

@@ -100,8 +100,8 @@
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='claim form type'">
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input type="radio" name="haveclaim[]" ng-click="haveclaim(1,$index);" value="1" ng-model="p[$index].haveclaim"> Have Policy No
-                                                            <input type="radio" name="haveclaim[]" ng-click="haveclaim(0,$index);" value="0" ng-model="p[$index].haveclaim"> Don't Have Policy No
+                                                            <input type="radio" name="haveclaim[]" ng-click="haveclaim(1,$index);" value="1" ng-model="p[$index].haveclaim"> Have Claim No
+                                                            <input type="radio" name="haveclaim[]" ng-click="haveclaim(0,$index);" value="0" ng-model="p[$index].haveclaim"> Don't Have Claim No
                                                         </label>
                                                     </div>
                                                     <p class="lastmsg" >
@@ -313,7 +313,7 @@
                                                 <button type="submit" class="btn btn-default" ng-disabled="createpolicy.$invalid" ng-click="createpolicysubmit(f.policyno,f.inception_date,f.expiry_date,f.stamount,f.agent_name,f.prem_amount,f.agent_no,f.cust_no,f.cust_email);">Add</button>
                                             </form>
                                         </uib-tab>
-                                        <uib-tab index="1" heading="View" ng-click="getpolicy('','');">
+                                        <uib-tab index="1" heading="View" >
                                             <form class="form-inline" name="selectkeyform">
                                                 
                                                 <div class="form-group col-md-6">
@@ -326,7 +326,10 @@
                                                     <!-- <label for="exampleInputEmail2">Email</label> -->
                                                     <input type="text" class="form-control sval" ng-model="s.selectedValue" id="exampleInputEmail2" placeholder="" required>
                                                 </div>
-                                                <button type="submit" class="btn btn-default" ng-disabled="selectkeyform.$invalid" ng-click="getpolicy(s.selectedKey,s.selectedValue);">Search</button>
+                                                <div class="form-group col-md-6 searchdiv">
+                                                    <button type="submit" class="btn btn-default btn-primary" ng-disabled="selectkeyform.$invalid" ng-click="getpolicy(s.selectedKey,s.selectedValue);">Search</button>
+                                                    <!-- <button type="submit" class="btn btn-default btn-primary"  ng-click="getpolicy('','');">Reset</button> -->
+                                                </div>
                                             </form>
                                             <!-- <div class="form-group">
                                                 <input ng-model="search.query" type="text" placeholder="Search" class="form-control searchpolicy" autofocus ng-change="getpolicy(search.query);">
@@ -455,8 +458,8 @@
                                                             <span aria-hidden="true">&laquo;</span>
                                                         </a>
                                                     </li>
-                                                    <li ng-repeat="n in getNumber(linkcount) track by $index">
-                                                        <a href="#" ng-click="getpage($index+1);">{{$index+1}}</a>
+                                                    <li ng-repeat="n in getNumber(linkcount) track by $index" ng-class="{'active':(($index+1)==viewPage)}">
+                                                        <a href="#"  ng-click="getpage($index+1);">{{$index+1}}</a>
                                                     </li>
                                                     <li ng-if="shownextlink">
                                                         <a href="#" aria-label="Next" ng-click="nextpage(viewPage);">
