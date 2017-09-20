@@ -118,6 +118,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.viewPage = 1;
         $scope.linkcount = 0;
         $scope.policylist = [];
+        $scope.maxrow = 2;
+        $scope.shownextlink = false;
+        $scope.showprevlink = false;
         $scope.toggleedit = function(e) {
             $('.edittoggler').hide(500);
             if($(".editform"+e).is(':visible')) {}
@@ -128,20 +131,30 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             return (new Date(d));
         };
         $scope.getNumber = function(num) {
-            return new Array(num);   
-        }
+            return new Array(Math.round(num));   
+        };
+        $scope.getpage = function(page) {
+            $scope.viewPage = page;
+            $rootScope.getpolicy($(".skey").val(),$(".sval").val());
+        };
         $scope.nextpage = function(page) {
-            console.log(page);
             $scope.viewPage = page +1;
-            $rootScope.getpolicy();
+            $rootScope.getpolicy($(".skey").val(),$(".sval").val());
+        };
+        $scope.prevpage = function(page) {
+            $scope.viewPage = page -1;
+            $rootScope.getpolicy($(".skey").val(),$(".sval").val());
         };
         $scope.showcreateform = function(key,value) {
-            console.log(key,"key");
-            console.log(value,"value");
+            //console.log(key,"key");
+            //console.log(value,"value");
             $rootScope.showcreate = true;
         };
-        $rootScope.getpolicy = function() {
-            var formData = {orderCount : $scope.orderCount,viewPage:$scope.viewPage};
+        $rootScope.getpolicy = function(skey,sval) {
+            if($scope.viewPage < 1)
+                $scope.viewPage = 1;
+            $scope.policylist = [];
+            var formData = {orderCount : $scope.orderCount,viewPage:$scope.viewPage,skey:skey,sval:sval};
             console.log(formData);
             apiService.viewpolicy(formData).then(function (callback){
                 $scope.linkcount = (callback.data.data.count)/2;
@@ -152,6 +165,22 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     viewlist[k].inceptiondate = new Date(v.inceptiondate); 
                 });
                 $scope.policylist =viewlist;
+                if(($scope.linkcount/$scope.viewPage) > 1)
+                {
+                    $scope.shownextlink = true;
+                }
+                else
+                {
+                    $scope.shownextlink = false;
+                }
+                if(($scope.linkcount/$scope.viewPage) == 1)
+                {
+                    $scope.showprevlink = true;
+                }
+                else
+                {
+                    $scope.showprevlink = false;
+                }
             });
         };
         $rootScope.createpolicysubmit = function(policyno,inception_date,expiry_date,stamount,agent_name,prem_amount,agent_no,cust_no,cust_email) {
@@ -197,8 +226,10 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.isemp = $.jStorage.get("isemp");
         $rootScope.keys = [
             {id:'' ,name:"Select"},
-            {id:'policy_no' ,name:"policyno"},
-            {id:'customer_email',name:"customeremail"},
+            {id:'policyno' ,name:"Policy No"},
+            {id:'customer_email',name:"Customer Email"},
+            {id:'agent_name',name:"Agent Name"},
+            {id:'customer_contact_no',name:"Customer Contact No"}
         ];
         $rootScope.haveclaim = function(v,index) {
             console.log(v);
@@ -251,6 +282,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         }
                         if(value.type=="employee form")
                         {
+                            $rootScope.chatlist = [];
                             $rootScope.pushSystemMsg(0,callback.data);
                             $rootScope.isemp = true;
                             $.jStorage.set("isemp",true);
@@ -532,13 +564,13 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         else
             $rootScope.minimizeChatwindow();
 
-        $rootScope.claim_noSubmit  = function(policyno,haveclaim) {
+        $rootScope.claim_noSubmit  = function(claimno,haveclaim) {
             console.log(haveclaim);
             var is_exist = "Y";
             if(haveclaim == 1)
                 is_exist = "Y";
             
-            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),policy_no:policyno,is_exist:is_exist};
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),claim_no:claimno,is_exist:is_exist};
             apiService.claimsubmit(formData).then(function (data){
                 angular.forEach(data.data.tiledlist, function(value, key) {
                     if(value.type=="mobile form type")

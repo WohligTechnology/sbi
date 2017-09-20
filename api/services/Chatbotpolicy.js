@@ -97,22 +97,47 @@ var model = {
     },
     viewpolicy: function (data, callback) {
         var maxrow = 2;
+        var searchobj = {};
+        if(data.skey != '' && data.sval !='')
+        {
+                if(data.skey == 'policyno')
+                {
+                    searchobj = {
+                        policyno:{ $regex: '.*' + data.sval + '.*',$options:"i" }
+                    };
+                }
+                else if(data.skey == 'customer_email')
+                {
+                    searchobj = {
+                        customer_email:{ $regex: '.*' + data.sval + '.*',$options:"i" }
+                    };
+                }
+                else if(data.skey == 'agent_name')
+                {
+                    searchobj = {
+                        agent_name:{ $regex: '.*' + data.sval + '.*',$options:"i" }
+                    };
+                }
+                else if(data.skey == 'customer_contact_no')
+                {
+                    searchobj = {
+                        customer_contact_no:{ $regex: '.*' + data.sval + '.*',$options:"i" }
+                    };
+                }
+        }
+        
         data.orderCount = data.orderCount ? data.orderCount : 0;
-        Chatbotpolicy.count({
-
-        }).exec(function (err, count) {
+        Chatbotpolicy.count(searchobj).exec(function (err, count) {
             if(count > 0)
             {
-                Chatbotpolicy.find({
-                    
-                }).skip((data.viewPage-1)*maxrow).limit(maxrow).exec(function (err, found) {
+                Chatbotpolicy.find(searchobj).skip((data.viewPage-1)*maxrow).limit(maxrow).exec(function (err, found) {
                     if (err) {
                         callback(err, null);
                     } 
                     else {
                         if (found) {
                             var responseobj = {count:count,data:found};
-                            console.log(found);
+                            //console.log(found);
                             callback(null, responseobj);
                         } else {
                             callback({

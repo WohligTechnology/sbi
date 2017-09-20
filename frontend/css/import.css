@@ -10326,6 +10326,15 @@ button.headerbtns:focus {
 .text-box span {
   font-size: 10px; }
 
+.tab-content {
+  margin-top: 20px; }
+
+.searchdiv {
+  margin-top: 10px; }
+
+.form-inline .form-control {
+  max-width: 100% !important; }
+
 div#all_questions {
   margin-top: 10px;
   padding-top: 10px;
