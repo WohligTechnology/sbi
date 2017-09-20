@@ -66,6 +66,13 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
     
 
     })
+
+    .controller('LoginCtrl', function ($scope, $uibModalInstance, obj) {
+
+        $scope.obj = obj;
+        $scope.loginemail = obj.email;
+        
+    })
     .controller('ChatCtrl', function ($scope, $rootScope,TemplateService, $timeout,$http,apiService,$state,$sce,$cookies,$location,$compile,$uibModal) {
         $rootScope.regEx="/^[0-9]{10,10}$/;"
         var url = $location.absUrl().split('?')[0];
@@ -121,6 +128,13 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.maxrow = 2;
         $scope.shownextlink = false;
         $scope.showprevlink = false;
+        $rootScope.$viewmodalInstance = {};
+        $rootScope.loginautherror = 0;
+        
+        $rootScope.loginpasswordCancel = function() {
+            //console.log("dismissing");
+            $rootScope.$viewmodalInstance.dismiss('cancel');
+        };
         $scope.toggleedit = function(e) {
             $('.edittoggler').hide(500);
             if($(".editform"+e).is(':visible')) {}
@@ -286,6 +300,19 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             $rootScope.pushSystemMsg(0,callback.data);
                             $rootScope.isemp = true;
                             $.jStorage.set("isemp",true);
+                           
+                            // $rootScope.$viewmodalInstance = $uibModal.open({
+                            //     scope: $rootScope,
+                            //     animation: true,
+                            //     size: 'sm',
+                            //     templateUrl: 'views/modal/selectbookmark.html',
+                            //     resolve: {
+                            //         items: function () {
+                            //         return {email:email};
+                            //         }
+                            //     },
+                            //     controller: 'LoginCtrl'
+                            // });
                             // $("#topic").text(data.data.data.tiledlist[0].topic);
                             // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
                         }
@@ -448,6 +475,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             
             
         };
+        
         $rootScope.pushPortalLink= function(id,type) {
             console.log(id,"index");//index of array
             console.log(type,"value");// 0-ion portal ,1-ion app
@@ -566,7 +594,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
 
         $rootScope.claim_noSubmit  = function(claimno,haveclaim) {
             console.log(haveclaim);
-            var is_exist = "Y";
+            var is_exist = "N";
             if(haveclaim == 1)
                 is_exist = "Y";
             
@@ -586,7 +614,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         };
         $rootScope.policy_noSubmit = function(policyno,havepolicy) {
             console.log(havepolicy);
-            var is_exist = "Y";
+            var is_exist = "N";
             if(havepolicy == 1)
                 is_exist = "Y";
             
