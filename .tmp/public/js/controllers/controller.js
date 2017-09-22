@@ -343,11 +343,24 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.loginsubmit = function(email,password) {
             var formData = {email:email,password:password};
             apiService.loginsubmit(formData).then(function (callback){
-                console.log(callback);
+                //console.log(callback);
                 if(!callback.data.value)
+                {
                     $rootScope.loginautherror = -1;
+                }
                 else
+                {
+                    $rootScope.loginautherror = 0;
                     $rootScope.loginSuccess = 1;
+                    $rootScope.loginpasswordCancel();
+                    $rootScope.isemp = true;
+                    $.jStorage.set("isemp",true);
+                    $.jStorage.set("id", 1);
+                    $.jStorage.set("name", name);
+                    $.jStorage.set("email", email);
+                    $.jStorage.set("isLoggedin", true);
+                    $rootScope.isLoggedin = true;
+                }
             });
         };
         $scope.logout = function()
@@ -648,12 +661,43 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 });
             });
         };
+        $rootScope.dob_Submit = function(dob) {
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),dob:dob};
+            apiService.dobsubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="claim form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                    if(value.type=="dob form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                });
+            });
+        };
         $rootScope.mobile_noSubmit = function(mobileno) {
             
             var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),mob_no:mobileno};
             apiService.mobilenosubmit(formData).then(function (data){
                 angular.forEach(data.data.tiledlist, function(value, key) {
                     if(value.type=="claim form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                    if(value.type=="dob form type")
                     {
                         $rootScope.pushSystemMsg(0,data.data);
                         $rootScope.showMsgLoader = false;
