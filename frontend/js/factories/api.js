@@ -68,6 +68,14 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
                 data: $.param(formData)
             })
         },
+        getnews: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotnews/getnews",
+                method: 'POST',
+                data: formData
+            })
+        },
         loginsubmit: function(formData, callback) {
             
             return $http({

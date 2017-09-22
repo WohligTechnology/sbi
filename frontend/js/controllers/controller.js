@@ -131,6 +131,8 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.$viewmodalInstance = {};
         $rootScope.loginautherror = 0;
         $rootScope.loginSuccess = 0;
+        $rootScope.newslist = [];
+        $rootScope.newsid="";
         $rootScope.loginpasswordCancel = function() {
             //console.log("dismissing");
             $rootScope.$viewmodalInstance.dismiss('cancel');
@@ -694,6 +696,12 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         
                         return false;
                     }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        return false;
+                    }
                 });
             });
         };
@@ -716,6 +724,12 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         $rootScope.showMsgLoader = false;
                         
                         
+                        return false;
+                    }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
                         return false;
                     }
                 });
@@ -813,6 +827,16 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $timeout(function(){
                     $(".chatinput").val("");
                 });
+                if($rootScope.newslist.length > 0) 
+                {
+
+                }
+                else
+                {
+                    apiService.getnews({}).then(function (data){    
+
+                    });
+                }
                 apiService.getCategoryFAQ($scope.formData).then(function (data){
 						
                     angular.forEach(data.data.tiledlist, function(value, key) {
@@ -820,8 +844,6 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         {
                         	$rootScope.pushSystemMsg(0,data.data);
                             $rootScope.showMsgLoader = false;
-                            
-                            
                             return false;
                         }
                         if(value.type=="form type")

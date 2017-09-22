@@ -131,6 +131,8 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.$viewmodalInstance = {};
         $rootScope.loginautherror = 0;
         $rootScope.loginSuccess = 0;
+        $rootScope.newslist = [];
+        $rootScope.newsid="";
         $rootScope.loginpasswordCancel = function() {
             //console.log("dismissing");
             $rootScope.$viewmodalInstance.dismiss('cancel');
@@ -662,6 +664,19 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             });
         };
         $rootScope.dob_Submit = function(dob) {
+
+            var dt = new Date(dob);
+            var date = dt.getDate();
+            var month = dt.getMonth();
+            var year = dt.getFullYear();
+            month= month+1;
+            if (month.toString().length == 1) {
+                month = "0" + month
+            }
+            if (date.toString().length == 1) {
+                date = "0" + date
+            }
+            dob= date.toString() + "-" + month.toString() + "-" +year.toString();
             var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),dob:dob};
             apiService.dobsubmit(formData).then(function (data){
                 angular.forEach(data.data.tiledlist, function(value, key) {
@@ -679,6 +694,12 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         $rootScope.showMsgLoader = false;
                         
                         
+                        return false;
+                    }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
                         return false;
                     }
                 });
@@ -800,6 +821,16 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $timeout(function(){
                     $(".chatinput").val("");
                 });
+                if($rootScope.newslist.length > 0) 
+                {
+
+                }
+                else
+                {
+                    apiService.getnews({}).then(function (data){    
+
+                    });
+                }
                 apiService.getCategoryFAQ($scope.formData).then(function (data){
 						
                     angular.forEach(data.data.tiledlist, function(value, key) {
@@ -807,8 +838,6 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         {
                         	$rootScope.pushSystemMsg(0,data.data);
                             $rootScope.showMsgLoader = false;
-                            
-                            
                             return false;
                         }
                         if(value.type=="form type")
