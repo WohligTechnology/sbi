@@ -1,7 +1,7 @@
 myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$httpParamSerializerJQLike) {
     adminurl2 = "http://35.161.160.7:8095/";
     var adminurl3 = "http://localhost/api/";
-    var adminurl3 = "http://cingulariti.com:8091/api/";
+    //var adminurl3 = "http://cingulariti.com:8091/api/";
     
     return {
 
@@ -53,7 +53,7 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
         dobsubmit:function(formData, callback) {
             
             return $http({
-                url:adminurl2+ "outDOB/"+formData.user_id+"/",
+                url:adminurl2+ "out/"+formData.user_id+"/",
                 headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
                 method: 'POST',
                 data: $.param(formData)
