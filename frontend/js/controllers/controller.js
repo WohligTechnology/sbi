@@ -662,6 +662,19 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             });
         };
         $rootScope.dob_Submit = function(dob) {
+
+            var dt = new Date(dob);
+            var date = dt.getDate();
+            var month = dt.getMonth();
+            var year = dt.getFullYear();
+            month= month+1;
+            if (month.toString().length == 1) {
+                month = "0" + month
+            }
+            if (date.toString().length == 1) {
+                date = "0" + date
+            }
+            dob= year.toString() + "-" + month.toString() + "-" + date.toString();
             var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),dob:dob};
             apiService.dobsubmit(formData).then(function (data){
                 angular.forEach(data.data.tiledlist, function(value, key) {
