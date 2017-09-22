@@ -1,9 +1,8 @@
 myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$httpParamSerializerJQLike) {
-    adminurl2 = "http://cingulariti.com:8095/";
+    adminurl2 = "http://35.161.160.7:8095/";
     var adminurl3 = "http://localhost/api/";
     var adminurl3 = "http://cingulariti.com:443/api/";
-    //adminurl2 = "http://localhost:8000/";
-    //adminurl2 = "http://192.168.0.129:8000/";
+    
     return {
 
         // This is a demo Service for POST Method.
@@ -51,6 +50,15 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
                 data: $.param(formData)
             })
         },
+        dobsubmit:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outDOB/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
         getDthlinkRes:function(formData, callback) {
             
             return $http({
@@ -58,6 +66,14 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
                 headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
                 method: 'POST',
                 data: $.param(formData)
+            })
+        },
+        loginsubmit: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotuser/loginuser",
+                method: 'POST',
+                data: formData
             })
         },
         getautocomplete: function(formData, callback) {

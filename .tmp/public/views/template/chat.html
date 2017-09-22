@@ -82,36 +82,32 @@
                                                 </div>
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='form type'">
                                                     <div class="checkbox">
-                                                        <label>
-                                                            <input type="radio" name="havepolicy[]" ng-click="havepolicy(1,$index);" value="1" ng-model="p[$index].havepolicy"> Have Policy No
-                                                            <input type="radio" name="havepolicy[]" ng-click="havepolicy(0,$index);" value="0" ng-model="p[$index].havepolicy"> Don't Have Policy No
-                                                        </label>
+                                                        <input type="radio" name="havepolicy[]" ng-click="havepolicy(1,$index);" value="1" ng-model="p[$index].havepolicy"> Have Policy No
+                                                        <input type="radio" name="havepolicy[]" ng-click="havepolicy(0,$index);" value="0" ng-model="p[$index].havepolicy"> Don't Have Policy No
                                                     </div>
                                                     <p class="lastmsg" >
                                                         <ng-bind-html style="display:none;" class="showpolicynoform{{$index}}">
                                                             <label for="p[$index].policy_no">Please enter your policy number </label>
                                                             <input type="text"  ng-model="p[$index].policy_no"  class="form-control policy_no{{$index}}" name="policy_no" id="policy_no" format-policy >
                                                             <br>
-                                                            <input class='policy_btn btn btn-default pull-right' id='policy_btn' type='button' value='Submit' ng-click="policy_noSubmit(p[$index].policy_no,p[$index].havepolicy);" />
+                                                            
                                                         </ng-bind-html>
-                                                        
+                                                        <input class='policy_btn btn btn-default pull-right' id='policy_btn' type='button' value='Submit' ng-click="policy_noSubmit(p[$index].policy_no,p[$index].havepolicy);" />
                                                     </p>
                                                 </div>
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='claim form type'">
                                                     <div class="checkbox">
-                                                        <label>
-                                                            <input type="radio" name="haveclaim[]" ng-click="haveclaim(1,$index);" value="1" ng-model="p[$index].haveclaim"> Have Claim No
-                                                            <input type="radio" name="haveclaim[]" ng-click="haveclaim(0,$index);" value="0" ng-model="p[$index].haveclaim"> Don't Have Claim No
-                                                        </label>
+                                                        <input type="radio" name="haveclaim[]" ng-click="haveclaim(1,$index);" value="1" ng-model="p[$index].haveclaim"> Have Claim No
+                                                        <input type="radio" name="haveclaim[]" ng-click="haveclaim(0,$index);" value="0" ng-model="p[$index].haveclaim"> Don't Have Claim No
                                                     </div>
                                                     <p class="lastmsg" >
                                                         <ng-bind-html style="display:none;" class="showclaimnoform{{$index}}">
                                                             <label for="p[$index].claim_no">Please enter your Claim number </label>
                                                             <input type="text"  ng-model="p[$index].claim_no"  class="form-control claim_no{{$index}}" name="claim_no" id="claim_no" format-claim >
                                                             <br>
-                                                            <input class='policy_btn btn btn-default pull-right' id='policy_btn' type='button' value='Submit' ng-click="claim_noSubmit(p[$index].claim_no,p[$index].haveclaim);" />
+                                                            
                                                         </ng-bind-html>
-                                                        
+                                                        <input class='policy_btn btn btn-default pull-right' id='policy_btn' type='button' value='Submit' ng-click="claim_noSubmit(p[$index].claim_no,p[$index].haveclaim);" />
                                                     </p>
                                                 </div>
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='mobile form type'">

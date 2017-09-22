@@ -110,6 +110,17 @@
                                                         <input class='policy_btn btn btn-default pull-right' id='policy_btn' type='button' value='Submit' ng-click="claim_noSubmit(p[$index].claim_no,p[$index].haveclaim);" />
                                                     </p>
                                                 </div>
+                                                <div class="chatType" ng-if="list.msg.tiledlist[0].type==='dob form type'">
+                                                    <p class="lastmsg" >
+                                                        <ng-bind-html  class="showdobform{{$index}}">
+                                                            <label for="dob[$index].dob">Please enter Date of Birth </label>
+                                                            <input type="date"  ng-model="dob[$index].dob"  class="form-control dob{{$index}}" name="dob" id="dob"  >
+                                                            <br>
+                                                            
+                                                        </ng-bind-html>
+                                                        <input class='policy_btn btn btn-default pull-right' id='dob_btn' type='button' value='Submit' ng-click="dob_Submit(dob[$index].dob);" />
+                                                    </p>
+                                                </div>
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='mobile form type'">
                                                     <p class="lastmsg" >
                                                         <ng-bind-html >
@@ -432,7 +443,7 @@
                                                                             <span class="label label-danger">Please Try Again.</span>
                                                                         </div>
                                                                     </div>
-                                                                    <button type="submit" class="btn btn-default" ng-disabled="editpolicy.$invalid" ng-click="editpolicysubmit(plist);">Edit</button>
+                                                                    <button type="submit" class="btn btn-default" ng-disabled="editpolicy.$invalid" ng-click="editpolicysubmit(plist);">Save</button>
                                                                 </form>
                                                             </div>
                                                         </td>
