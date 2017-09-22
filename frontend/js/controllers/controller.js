@@ -674,7 +674,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             if (date.toString().length == 1) {
                 date = "0" + date
             }
-            dob= year.toString() + "-" + month.toString() + "-" + date.toString();
+            dob= date.toString() + "-" + month.toString() + "-" +year.toString();
             var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),dob:dob};
             apiService.dobsubmit(formData).then(function (data){
                 angular.forEach(data.data.tiledlist, function(value, key) {
