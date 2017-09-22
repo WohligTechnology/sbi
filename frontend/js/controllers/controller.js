@@ -833,9 +833,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 }
                 else
                 {
-                    apiService.getnews({}).then(function (data){    
+                    // apiService.getnews({}).then(function (data){    
 
-                    });
+                    // });
                 }
                 apiService.getCategoryFAQ($scope.formData).then(function (data){
 						
