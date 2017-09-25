@@ -138,6 +138,22 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         {
             $rootScope.newslist = $.jStorage.get("newslist");
             $rootScope.newsid = $.jStorage.get("newsid");
+        
+            if($rootScope.newslist.body.length > 0) 
+            {
+
+            }
+            else
+            {
+                
+                apiService.getnews({}).then(function (data){    
+                    $rootScope.newslist = data.data.data;
+                    $rootScope.newsid = data.data.id;
+                    $.jStorage.set("newslist",$rootScope.newslist);
+                    $.jStorage.set("newsid",$rootScope.newsid);
+                    
+                });
+            }
         }
         $rootScope.loginpasswordCancel = function() {
             //console.log("dismissing");
@@ -866,13 +882,15 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $timeout(function(){
                     $(".chatinput").val("");
                 });
+                console.log($rootScope.newsid);
                 if($rootScope.newslist.body.length > 0) 
                 {
 
                 }
                 else
                 {
-                    apiService.getnews({}).then(function (data){    
+                    var formData = {newsid:$rootScope.newsid};
+                    apiService.getmorenews({}).then(function (data){    
                         $rootScope.newslist = data.data.data;
                         $rootScope.newsid = data.data.id;
                         $.jStorage.set("newslist",$rootScope.newslist);

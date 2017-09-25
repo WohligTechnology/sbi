@@ -12,7 +12,7 @@ var model = {
         });
     },
     getmorenews: function (reqdata, callback) {
-        inshorts.more({category:'startup',id:reqdata.id},function(err,result){
+        inshorts.more({category:'business',id:reqdata.newsid},function(err,result){
             if(!err)
                 callback(null,result);
             else

@@ -134,8 +134,27 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.newslist = [];
         $rootScope.newsid="";
 
-        $rootScope.newslist = $.jStorage.get("newslist",newslist);
-        $rootScope.newsid = $.jStorage.get("newsid",newsid);
+        if($.jStorage.get("newslist"))
+        {
+            $rootScope.newslist = $.jStorage.get("newslist");
+            $rootScope.newsid = $.jStorage.get("newsid");
+        
+            if($rootScope.newslist.body.length > 0) 
+            {
+
+            }
+            else
+            {
+                
+                apiService.getnews({}).then(function (data){    
+                    $rootScope.newslist = data.data.data;
+                    $rootScope.newsid = data.data.id;
+                    $.jStorage.set("newslist",$rootScope.newslist);
+                    $.jStorage.set("newsid",$rootScope.newsid);
+                    
+                });
+            }
+        }
         $rootScope.loginpasswordCancel = function() {
             //console.log("dismissing");
             $rootScope.$viewmodalInstance.dismiss('cancel');
@@ -263,6 +282,20 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $(".showclaimnoform"+index).hide();
             }
             $(".claim_no"+index).val("");
+        };
+        $rootScope.havegr = function(v,index) {
+            console.log(v);
+            console.log(index);
+            if(v == 1)
+            {
+                $(".showgrform"+index).show();
+                
+            }
+            else
+            {
+                $(".showgrform"+index).hide();
+            }
+            $(".gr_no"+index).val("");
         };
         $rootScope.havepolicy = function(v,index) {
             console.log(v);
@@ -646,6 +679,25 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 });
             });
         };
+        $rootScope.gr_noSubmit  = function(grno,havegr) {
+            var is_exist = "N";
+            if(havegr == 1)
+                is_exist = "Y";
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),grno:grno,is_exist:is_exist};
+            apiService.grsubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                });
+            });
+        };
         $rootScope.policy_noSubmit = function(policyno,havepolicy) {
             console.log(havepolicy);
             var is_exist = "N";
@@ -830,14 +882,20 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $timeout(function(){
                     $(".chatinput").val("");
                 });
-                if($rootScope.newslist.length > 0) 
+                console.log($rootScope.newsid);
+                if($rootScope.newslist.body.length > 0) 
                 {
 
                 }
                 else
                 {
-                    apiService.getnews({}).then(function (data){    
-
+                    var formData = {newsid:$rootScope.newsid};
+                    apiService.getmorenews({}).then(function (data){    
+                        $rootScope.newslist = data.data.data;
+                        $rootScope.newsid = data.data.id;
+                        $.jStorage.set("newslist",$rootScope.newslist);
+                        $.jStorage.set("newsid",$rootScope.newsid);
+                        
                     });
                 }
                 apiService.getCategoryFAQ($scope.formData).then(function (data){
@@ -873,6 +931,11 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             
                             return false;
                         }
+                        if(value.type=="DTHyperlink")
+                        {
+                           $rootScope.DthResponse(0,data.data);  
+                        }
+
                         // if(value.type=="rate card")
                         // {
                         //     $rootScope.pushSystemMsg(0,data.data.data);
@@ -880,10 +943,6 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             
                             
                         //     return false;
-                        // }
-                        // else if(value.type=="DTHyperlink")
-                        // {
-                        //    $rootScope.DthResponse(0,data.data.data);  
                         // }
                         // else if(value.type=="Instruction")
                         // {

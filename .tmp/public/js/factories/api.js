@@ -1,7 +1,7 @@
 myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$httpParamSerializerJQLike) {
     adminurl2 = "http://35.161.160.7:8095/";
     var adminurl3 = "http://localhost/api/";
-    //var adminurl3 = "http://cingulariti.com:8091/api/";
+    var adminurl3 = "https://cingulariti.com:443/api/";
     
     return {
 
@@ -27,6 +27,15 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
             
             return $http({
                 url:adminurl2+ "outForm/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        grsubmit:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outGr/"+formData.user_id+"/",
                 headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
                 method: 'POST',
                 data: $.param(formData)
@@ -72,6 +81,14 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
             
             return $http({
                 url:adminurl3+ "Chatbotnews/getnews",
+                method: 'POST',
+                data: formData
+            })
+        },
+        getmorenews: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotnews/getmorenews",
                 method: 'POST',
                 data: formData
             })

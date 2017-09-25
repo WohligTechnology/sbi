@@ -352,6 +352,36 @@ myApp.directive('img', function ($compile, $parse) {
             }
         };
     })
+    myApp.directive('formatGr', function(){
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModelCtrl) {
+                function fromUser(text) {
+                    if (text) {
+                        if (text.length > 7)
+                        {
+                            alert("Please Enter 7 Digit Grievance No");
+                            mString = text.substring(0,text.length-1)
+                            //console.log(mString);
+                            $(element).val(mString);
+                            return mString;
+                        }
+                        else
+                             {
+                            var transformedInput = text.replace(/[^0-9-]/g, '');
+                            if (transformedInput !== text) {
+                                ngModelCtrl.$setViewValue(transformedInput);
+                                ngModelCtrl.$render();
+                            }
+                            return transformedInput;
+                        }
+                    }
+                    return undefined;
+                }
+                ngModelCtrl.$parsers.push(fromUser);
+            }
+        };
+    })
     myApp.directive('formatClaim', function(){
         return {
             require: 'ngModel',
