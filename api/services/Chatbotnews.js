@@ -4,7 +4,7 @@ var inshorts= require('inshorts').init();
 var exports = _.cloneDeep(require("sails-wohlig-service")());
 var model = {
     getnews: function (reqdata, callback) {
-        inshorts.getNews('category_name',function(err,result){
+        inshorts.getNews('business',function(err,result){
             if(!err)
                 callback(null,result);
             else

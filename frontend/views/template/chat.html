@@ -113,6 +113,21 @@
                                                         <input class='policy_btn btn btn-default pull-right' id='policy_btn' type='button' value='Submit' ng-click="claim_noSubmit(p[$index].claim_no,p[$index].haveclaim);" />
                                                     </p>
                                                 </div>
+                                                <div class="chatType" ng-if="list.msg.tiledlist[0].type==='grievance form type'">
+                                                    <div class="checkbox">
+                                                        <input type="radio" name="havegr[]" ng-click="havegr(1,$index);" value="1" ng-model="p[$index].havegr"> Have grievance No
+                                                        <input type="radio" name="havegr[]" ng-click="havegr(0,$index);" value="0" ng-model="p[$index].havegr"> Don't Have grievance No
+                                                    </div>
+                                                    <p class="lastmsg" >
+                                                        <ng-bind-html style="display:none;" class="showgrform{{$index}}">
+                                                            <label for="p[$index].gr_no">Please enter your Grievance number </label>
+                                                            <input type="text"  ng-model="p[$index].gr_no"  class="form-control gr_no{{$index}}" name="gr_no" id="gr_no" format-gr >
+                                                            <br>
+                                                            
+                                                        </ng-bind-html>
+                                                        <input class='policy_btn btn btn-default pull-right' id='policy_btn' type='button' value='Submit' ng-click="gr_noSubmit(p[$index].gr_no,p[$index].havegr);" />
+                                                    </p>
+                                                </div>
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='dob form type'">
                                                     <p class="lastmsg" >
                                                         <ng-bind-html  class="showdobform{{$index}}">

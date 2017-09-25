@@ -133,6 +133,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.loginSuccess = 0;
         $rootScope.newslist = [];
         $rootScope.newsid="";
+
+        $rootScope.newslist = $.jStorage.get("newslist",newslist);
+        $rootScope.newsid = $.jStorage.get("newsid",newsid);
         $rootScope.loginpasswordCancel = function() {
             //console.log("dismissing");
             $rootScope.$viewmodalInstance.dismiss('cancel');
@@ -724,6 +727,12 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         $rootScope.showMsgLoader = false;
                         
                         
+                        return false;
+                    }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
                         return false;
                     }
                 });
