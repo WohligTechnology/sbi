@@ -676,6 +676,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         
                         return false;
                     }
+                    if(value.type=="grievance form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false; 
+                    }
                 });
             });
         };
@@ -787,6 +795,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         $rootScope.showMsgLoader = false;
                         return false;
                     }
+                    if(value.type=="grievance form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false; 
+                        }
                 });
             });
         };
@@ -940,7 +956,11 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         }
                         if(value.type=="grievance form type")
                         {
-                           $rootScope.DthResponse(0,data.data);  
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false; 
                         }
 
                         // if(value.type=="rate card")
