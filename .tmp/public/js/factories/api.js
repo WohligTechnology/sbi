@@ -1,7 +1,7 @@
 myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$httpParamSerializerJQLike) {
     adminurl2 = "http://35.161.160.7:8095/";
     var adminurl3 = "http://localhost/api/";
-    //var adminurl3 = "http://cingulariti.com:443/api/";
+    var adminurl3 = "http://cingulariti.com:443/api/";
     
     return {
 
@@ -183,7 +183,7 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
             
            
             return $http({
-                url:adminurl3+ "Chatbotbookmark/viewbookmark",
+                url:adminurl3+ "Chathistory/viewbookmark",
                 method: 'POST',
                 data: formData,
             });

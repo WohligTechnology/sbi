@@ -13,7 +13,9 @@ var schema = new Schema({
         type:String
     },
     response: {
-        type:Object
+        topic : String,
+		sessionId : Number,
+		type : String,
     }
 });
 
@@ -27,25 +29,24 @@ schema.plugin(deepPopulate, {
 });
 schema.plugin(uniqueValidator);
 schema.plugin(timestamps);
-module.exports = mongoose.model('chatbotbookmak', schema,'chatbotbookmark');
+module.exports = mongoose.model('Chathistory', schema,'chathistory');
 
-var exports = _.cloneDeep(require("sails-wohlig-service")(schema));
+var exports = _.cloneDeep(require("sails-wohlig-service")(schema,'chathistory'));
 var model = {
     viewbookmark: function (data, callback) {
         console.log("data", data);
         var userid = data.userid;
-        Chatbotbookmark.aggregate([
-        {
-            
-             $group: { _id: "sessionId",count: {$sum: 1} } },
-            { $match: { user_id: userid } 
-        }
-   ]).exec(function (err, found) {
+        Chathistory.aggregate([
+			//user_id: userid
+        {$group: { _id: "$sessionId", count:{$sum:1} } },
+        { $match: { user_id: userid } }
+		]).exec(function (err, found) {
             if (err) {
                 callback(err, null);
             } 
             else {
                 if (found) {
+					//var results = _.groupBy(found, "sportsListCategory.name");
                     callback(null, found);
                 } else {
                     callback({
@@ -58,7 +59,7 @@ var model = {
     },
     getbookmark: function (data, callback) {
         console.log("data", data)
-        Chatbotbookmark.findOne({
+        Chathistory.findOne({
             _id: mongoose.Types.ObjectId(data.selected),
         }, [ "user", "chatlist"]).sort({ 
             createdAt : -1 
@@ -79,7 +80,7 @@ var model = {
         });
     },
     savebookmark: function (data, callback) {
-        Chatbotbookmark.saveData({
+        Chathistory.saveData({
             user: data.userid,
             chatlist: data.chatlist,
             name:data.name,

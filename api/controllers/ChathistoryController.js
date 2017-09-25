@@ -2,7 +2,7 @@ module.exports = _.cloneDeep(require("sails-wohlig-controller"));
 var controller = {
     savebookmark: function (req, res) {
         if (req.body) {
-            Chatbotbookmark.savebookmark(req.body, res.callback);
+            Chathistory.savebookmark(req.body, res.callback);
         }
         else {
             res.json({
@@ -15,7 +15,7 @@ var controller = {
     },
     viewbookmark: function (req, res) {
         if (req.body) {
-            Chatbotbookmark.viewbookmark(req.body, res.callback);
+            Chathistory.viewbookmark(req.body, res.callback);
         }
         else {
             res.json({
@@ -28,7 +28,7 @@ var controller = {
     },
     getbookmark: function (req, res) {
         if (req.body) {
-            Chatbotbookmark.getbookmark(req.body, res.callback);
+            Chathistory.getbookmark(req.body, res.callback);
         }
         else {
             res.json({

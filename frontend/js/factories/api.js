@@ -183,7 +183,7 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$
             
            
             return $http({
-                url:adminurl3+ "Chatbotbookmark/viewbookmark",
+                url:adminurl3+ "Chathistory/viewbookmark",
                 method: 'POST',
                 data: formData,
             });

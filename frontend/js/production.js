@@ -16,7 +16,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
  * Contributing Author: Tyler Smith
  */!function($){var e=!0;$.flexslider=function(t,a){var n=$(t);n.vars=$.extend({},$.flexslider.defaults,a);var i=n.vars.namespace,r=window.navigator&&window.navigator.msPointerEnabled&&window.MSGesture,s=("ontouchstart"in window||r||window.DocumentTouch&&document instanceof DocumentTouch)&&n.vars.touch,o="click touchend MSPointerUp keyup",l="",c,d="vertical"===n.vars.direction,u=n.vars.reverse,v=n.vars.itemWidth>0,p="fade"===n.vars.animation,m=""!==n.vars.asNavFor,f={};$.data(t,"flexslider",n),f={init:function(){n.animating=!1,n.currentSlide=parseInt(n.vars.startAt?n.vars.startAt:0,10),isNaN(n.currentSlide)&&(n.currentSlide=0),n.animatingTo=n.currentSlide,n.atEnd=0===n.currentSlide||n.currentSlide===n.last,n.containerSelector=n.vars.selector.substr(0,n.vars.selector.search(" ")),n.slides=$(n.vars.selector,n),n.container=$(n.containerSelector,n),n.count=n.slides.length,n.syncExists=$(n.vars.sync).length>0,"slide"===n.vars.animation&&(n.vars.animation="swing"),n.prop=d?"top":"marginLeft",n.args={},n.manualPause=!1,n.stopped=!1,n.started=!1,n.startTimeout=null,n.transitions=!n.vars.video&&!p&&n.vars.useCSS&&function(){var e=document.createElement("div"),t=["perspectiveProperty","WebkitPerspective","MozPerspective","OPerspective","msPerspective"];for(var a in t)if(void 0!==e.style[t[a]])return n.pfx=t[a].replace("Perspective","").toLowerCase(),n.prop="-"+n.pfx+"-transform",!0;return!1}(),n.ensureAnimationEnd="",""!==n.vars.controlsContainer&&(n.controlsContainer=$(n.vars.controlsContainer).length>0&&$(n.vars.controlsContainer)),""!==n.vars.manualControls&&(n.manualControls=$(n.vars.manualControls).length>0&&$(n.vars.manualControls)),""!==n.vars.customDirectionNav&&(n.customDirectionNav=2===$(n.vars.customDirectionNav).length&&$(n.vars.customDirectionNav)),n.vars.randomize&&(n.slides.sort(function(){return Math.round(Math.random())-.5}),n.container.empty().append(n.slides)),n.doMath(),n.setup("init"),n.vars.controlNav&&f.controlNav.setup(),n.vars.directionNav&&f.directionNav.setup(),n.vars.keyboard&&(1===$(n.containerSelector).length||n.vars.multipleKeyboard)&&$(document).bind("keyup",function(e){var t=e.keyCode;if(!n.animating&&(39===t||37===t)){var a=39===t?n.getTarget("next"):37===t&&n.getTarget("prev");n.flexAnimate(a,n.vars.pauseOnAction)}}),n.vars.mousewheel&&n.bind("mousewheel",function(e,t,a,i){e.preventDefault();var r=t<0?n.getTarget("next"):n.getTarget("prev");n.flexAnimate(r,n.vars.pauseOnAction)}),n.vars.pausePlay&&f.pausePlay.setup(),n.vars.slideshow&&n.vars.pauseInvisible&&f.pauseInvisible.init(),n.vars.slideshow&&(n.vars.pauseOnHover&&n.hover(function(){n.manualPlay||n.manualPause||n.pause()},function(){n.manualPause||n.manualPlay||n.stopped||n.play()}),n.vars.pauseInvisible&&f.pauseInvisible.isHidden()||(n.vars.initDelay>0?n.startTimeout=setTimeout(n.play,n.vars.initDelay):n.play())),m&&f.asNav.setup(),s&&n.vars.touch&&f.touch(),(!p||p&&n.vars.smoothHeight)&&$(window).bind("resize orientationchange focus",f.resize()),n.find("img").attr("draggable","false"),setTimeout(function(){n.vars.start(n)},200)},asNav:{setup:function(){n.asNav=!0,n.animatingTo=Math.floor(n.currentSlide/n.move),n.currentItem=n.currentSlide,n.slides.removeClass(i+"active-slide").eq(n.currentItem).addClass(i+"active-slide"),r?(t._slider=n,n.slides.each(function(){var e=this;e._gesture=new MSGesture,e._gesture.target=e,e.addEventListener("MSPointerDown",function(e){e.preventDefault(),e.currentTarget._gesture&&e.currentTarget._gesture.addPointer(e.pointerId)},!1),e.addEventListener("MSGestureTap",function(e){e.preventDefault();var t=$(this),a=t.index();$(n.vars.asNavFor).data("flexslider").animating||t.hasClass("active")||(n.direction=n.currentItem<a?"next":"prev",n.flexAnimate(a,n.vars.pauseOnAction,!1,!0,!0))})})):n.slides.on(o,function(e){e.preventDefault();var t=$(this),a=t.index();t.offset().left-$(n).scrollLeft()<=0&&t.hasClass(i+"active-slide")?n.flexAnimate(n.getTarget("prev"),!0):$(n.vars.asNavFor).data("flexslider").animating||t.hasClass(i+"active-slide")||(n.direction=n.currentItem<a?"next":"prev",n.flexAnimate(a,n.vars.pauseOnAction,!1,!0,!0))})}},controlNav:{setup:function(){n.manualControls?f.controlNav.setupManual():f.controlNav.setupPaging()},setupPaging:function(){var e="thumbnails"===n.vars.controlNav?"control-thumbs":"control-paging",t=1,a,r;if(n.controlNavScaffold=$('<ol class="'+i+"control-nav "+i+e+'"></ol>'),n.pagingCount>1)for(var s=0;s<n.pagingCount;s++){r=n.slides.eq(s),void 0===r.attr("data-thumb-alt")&&r.attr("data-thumb-alt","");var c=""!==r.attr("data-thumb-alt")?c=' alt="'+r.attr("data-thumb-alt")+'"':"";if(a="thumbnails"===n.vars.controlNav?'<img src="'+r.attr("data-thumb")+'"'+c+"/>":'<a href="#">'+t+"</a>","thumbnails"===n.vars.controlNav&&!0===n.vars.thumbCaptions){var d=r.attr("data-thumbcaption");""!==d&&void 0!==d&&(a+='<span class="'+i+'caption">'+d+"</span>")}n.controlNavScaffold.append("<li>"+a+"</li>"),t++}n.controlsContainer?$(n.controlsContainer).append(n.controlNavScaffold):n.append(n.controlNavScaffold),f.controlNav.set(),f.controlNav.active(),n.controlNavScaffold.delegate("a, img",o,function(e){if(e.preventDefault(),""===l||l===e.type){var t=$(this),a=n.controlNav.index(t);t.hasClass(i+"active")||(n.direction=a>n.currentSlide?"next":"prev",n.flexAnimate(a,n.vars.pauseOnAction))}""===l&&(l=e.type),f.setToClearWatchedEvent()})},setupManual:function(){n.controlNav=n.manualControls,f.controlNav.active(),n.controlNav.bind(o,function(e){if(e.preventDefault(),""===l||l===e.type){var t=$(this),a=n.controlNav.index(t);t.hasClass(i+"active")||(a>n.currentSlide?n.direction="next":n.direction="prev",n.flexAnimate(a,n.vars.pauseOnAction))}""===l&&(l=e.type),f.setToClearWatchedEvent()})},set:function(){var e="thumbnails"===n.vars.controlNav?"img":"a";n.controlNav=$("."+i+"control-nav li "+e,n.controlsContainer?n.controlsContainer:n)},active:function(){n.controlNav.removeClass(i+"active").eq(n.animatingTo).addClass(i+"active")},update:function(e,t){n.pagingCount>1&&"add"===e?n.controlNavScaffold.append($('<li><a href="#">'+n.count+"</a></li>")):1===n.pagingCount?n.controlNavScaffold.find("li").remove():n.controlNav.eq(t).closest("li").remove(),f.controlNav.set(),n.pagingCount>1&&n.pagingCount!==n.controlNav.length?n.update(t,e):f.controlNav.active()}},directionNav:{setup:function(){var e=$('<ul class="'+i+'direction-nav"><li class="'+i+'nav-prev"><a class="'+i+'prev" href="#">'+n.vars.prevText+'</a></li><li class="'+i+'nav-next"><a class="'+i+'next" href="#">'+n.vars.nextText+"</a></li></ul>");n.customDirectionNav?n.directionNav=n.customDirectionNav:n.controlsContainer?($(n.controlsContainer).append(e),n.directionNav=$("."+i+"direction-nav li a",n.controlsContainer)):(n.append(e),n.directionNav=$("."+i+"direction-nav li a",n)),f.directionNav.update(),n.directionNav.bind(o,function(e){e.preventDefault();var t;""!==l&&l!==e.type||(t=$(this).hasClass(i+"next")?n.getTarget("next"):n.getTarget("prev"),n.flexAnimate(t,n.vars.pauseOnAction)),""===l&&(l=e.type),f.setToClearWatchedEvent()})},update:function(){var e=i+"disabled";1===n.pagingCount?n.directionNav.addClass(e).attr("tabindex","-1"):n.vars.animationLoop?n.directionNav.removeClass(e).removeAttr("tabindex"):0===n.animatingTo?n.directionNav.removeClass(e).filter("."+i+"prev").addClass(e).attr("tabindex","-1"):n.animatingTo===n.last?n.directionNav.removeClass(e).filter("."+i+"next").addClass(e).attr("tabindex","-1"):n.directionNav.removeClass(e).removeAttr("tabindex")}},pausePlay:{setup:function(){var e=$('<div class="'+i+'pauseplay"><a href="#"></a></div>');n.controlsContainer?(n.controlsContainer.append(e),n.pausePlay=$("."+i+"pauseplay a",n.controlsContainer)):(n.append(e),n.pausePlay=$("."+i+"pauseplay a",n)),f.pausePlay.update(n.vars.slideshow?i+"pause":i+"play"),n.pausePlay.bind(o,function(e){e.preventDefault(),""!==l&&l!==e.type||($(this).hasClass(i+"pause")?(n.manualPause=!0,n.manualPlay=!1,n.pause()):(n.manualPause=!1,n.manualPlay=!0,n.play())),""===l&&(l=e.type),f.setToClearWatchedEvent()})},update:function(e){"play"===e?n.pausePlay.removeClass(i+"pause").addClass(i+"play").html(n.vars.playText):n.pausePlay.removeClass(i+"play").addClass(i+"pause").html(n.vars.pauseText)}},touch:function(){function e(e){e.stopPropagation(),n.animating?e.preventDefault():(n.pause(),t._gesture.addPointer(e.pointerId),T=0,c=d?n.h:n.w,f=Number(new Date),l=v&&u&&n.animatingTo===n.last?0:v&&u?n.limit-(n.itemW+n.vars.itemMargin)*n.move*n.animatingTo:v&&n.currentSlide===n.last?n.limit:v?(n.itemW+n.vars.itemMargin)*n.move*n.currentSlide:u?(n.last-n.currentSlide+n.cloneOffset)*c:(n.currentSlide+n.cloneOffset)*c)}function a(e){e.stopPropagation();var a=e.target._slider;if(a){var n=-e.translationX,i=-e.translationY;if(T+=d?i:n,m=T,y=d?Math.abs(T)<Math.abs(-n):Math.abs(T)<Math.abs(-i),e.detail===e.MSGESTURE_FLAG_INERTIA)return void setImmediate(function(){t._gesture.stop()});(!y||Number(new Date)-f>500)&&(e.preventDefault(),!p&&a.transitions&&(a.vars.animationLoop||(m=T/(0===a.currentSlide&&T<0||a.currentSlide===a.last&&T>0?Math.abs(T)/c+2:1)),a.setProps(l+m,"setTouch")))}}function i(e){e.stopPropagation();var t=e.target._slider;if(t){if(t.animatingTo===t.currentSlide&&!y&&null!==m){var a=u?-m:m,n=a>0?t.getTarget("next"):t.getTarget("prev");t.canAdvance(n)&&(Number(new Date)-f<550&&Math.abs(a)>50||Math.abs(a)>c/2)?t.flexAnimate(n,t.vars.pauseOnAction):p||t.flexAnimate(t.currentSlide,t.vars.pauseOnAction,!0)}s=null,o=null,m=null,l=null,T=0}}var s,o,l,c,m,f,g,h,S,y=!1,x=0,b=0,T=0;r?(t.style.msTouchAction="none",t._gesture=new MSGesture,t._gesture.target=t,t.addEventListener("MSPointerDown",e,!1),t._slider=n,t.addEventListener("MSGestureChange",a,!1),t.addEventListener("MSGestureEnd",i,!1)):(g=function(e){n.animating?e.preventDefault():(window.navigator.msPointerEnabled||1===e.touches.length)&&(n.pause(),c=d?n.h:n.w,f=Number(new Date),x=e.touches[0].pageX,b=e.touches[0].pageY,l=v&&u&&n.animatingTo===n.last?0:v&&u?n.limit-(n.itemW+n.vars.itemMargin)*n.move*n.animatingTo:v&&n.currentSlide===n.last?n.limit:v?(n.itemW+n.vars.itemMargin)*n.move*n.currentSlide:u?(n.last-n.currentSlide+n.cloneOffset)*c:(n.currentSlide+n.cloneOffset)*c,s=d?b:x,o=d?x:b,t.addEventListener("touchmove",h,!1),t.addEventListener("touchend",S,!1))},h=function(e){x=e.touches[0].pageX,b=e.touches[0].pageY,m=d?s-b:s-x,y=d?Math.abs(m)<Math.abs(x-o):Math.abs(m)<Math.abs(b-o);var t=500;(!y||Number(new Date)-f>500)&&(e.preventDefault(),!p&&n.transitions&&(n.vars.animationLoop||(m/=0===n.currentSlide&&m<0||n.currentSlide===n.last&&m>0?Math.abs(m)/c+2:1),n.setProps(l+m,"setTouch")))},S=function(e){if(t.removeEventListener("touchmove",h,!1),n.animatingTo===n.currentSlide&&!y&&null!==m){var a=u?-m:m,i=a>0?n.getTarget("next"):n.getTarget("prev");n.canAdvance(i)&&(Number(new Date)-f<550&&Math.abs(a)>50||Math.abs(a)>c/2)?n.flexAnimate(i,n.vars.pauseOnAction):p||n.flexAnimate(n.currentSlide,n.vars.pauseOnAction,!0)}t.removeEventListener("touchend",S,!1),s=null,o=null,m=null,l=null},t.addEventListener("touchstart",g,!1))},resize:function(){!n.animating&&n.is(":visible")&&(v||n.doMath(),p?f.smoothHeight():v?(n.slides.width(n.computedW),n.update(n.pagingCount),n.setProps()):d?(n.viewport.height(n.h),n.setProps(n.h,"setTotal")):(n.vars.smoothHeight&&f.smoothHeight(),n.newSlides.width(n.computedW),n.setProps(n.computedW,"setTotal")))},smoothHeight:function(e){if(!d||p){var t=p?n:n.viewport;e?t.animate({height:n.slides.eq(n.animatingTo).innerHeight()},e):t.innerHeight(n.slides.eq(n.animatingTo).innerHeight())}},sync:function(e){var t=$(n.vars.sync).data("flexslider"),a=n.animatingTo;switch(e){case"animate":t.flexAnimate(a,n.vars.pauseOnAction,!1,!0);break;case"play":t.playing||t.asNav||t.play();break;case"pause":t.pause();break}},uniqueID:function(e){return e.filter("[id]").add(e.find("[id]")).each(function(){var e=$(this);e.attr("id",e.attr("id")+"_clone")}),e},pauseInvisible:{visProp:null,init:function(){var e=f.pauseInvisible.getHiddenProp();if(e){var t=e.replace(/[H|h]idden/,"")+"visibilitychange";document.addEventListener(t,function(){f.pauseInvisible.isHidden()?n.startTimeout?clearTimeout(n.startTimeout):n.pause():n.started?n.play():n.vars.initDelay>0?setTimeout(n.play,n.vars.initDelay):n.play()})}},isHidden:function(){var e=f.pauseInvisible.getHiddenProp();return!!e&&document[e]},getHiddenProp:function(){var e=["webkit","moz","ms","o"];if("hidden"in document)return"hidden";for(var t=0;t<e.length;t++)if(e[t]+"Hidden"in document)return e[t]+"Hidden";return null}},setToClearWatchedEvent:function(){clearTimeout(c),c=setTimeout(function(){l=""},3e3)}},n.flexAnimate=function(e,t,a,r,o){if(n.vars.animationLoop||e===n.currentSlide||(n.direction=e>n.currentSlide?"next":"prev"),m&&1===n.pagingCount&&(n.direction=n.currentItem<e?"next":"prev"),!n.animating&&(n.canAdvance(e,o)||a)&&n.is(":visible")){if(m&&r){var l=$(n.vars.asNavFor).data("flexslider");if(n.atEnd=0===e||e===n.count-1,l.flexAnimate(e,!0,!1,!0,o),n.direction=n.currentItem<e?"next":"prev",l.direction=n.direction,Math.ceil((e+1)/n.visible)-1===n.currentSlide||0===e)return n.currentItem=e,n.slides.removeClass(i+"active-slide").eq(e).addClass(i+"active-slide"),!1;n.currentItem=e,n.slides.removeClass(i+"active-slide").eq(e).addClass(i+"active-slide"),e=Math.floor(e/n.visible)}if(n.animating=!0,n.animatingTo=e,t&&n.pause(),n.vars.before(n),n.syncExists&&!o&&f.sync("animate"),n.vars.controlNav&&f.controlNav.active(),v||n.slides.removeClass(i+"active-slide").eq(e).addClass(i+"active-slide"),n.atEnd=0===e||e===n.last,n.vars.directionNav&&f.directionNav.update(),e===n.last&&(n.vars.end(n),n.vars.animationLoop||n.pause()),p)s?(n.slides.eq(n.currentSlide).css({opacity:0,zIndex:1}),n.slides.eq(e).css({opacity:1,zIndex:2}),n.wrapup(c)):(n.slides.eq(n.currentSlide).css({zIndex:1}).animate({opacity:0},n.vars.animationSpeed,n.vars.easing),n.slides.eq(e).css({zIndex:2}).animate({opacity:1},n.vars.animationSpeed,n.vars.easing,n.wrapup));else{var c=d?n.slides.filter(":first").height():n.computedW,g,h,S;v?(g=n.vars.itemMargin,S=(n.itemW+g)*n.move*n.animatingTo,h=S>n.limit&&1!==n.visible?n.limit:S):h=0===n.currentSlide&&e===n.count-1&&n.vars.animationLoop&&"next"!==n.direction?u?(n.count+n.cloneOffset)*c:0:n.currentSlide===n.last&&0===e&&n.vars.animationLoop&&"prev"!==n.direction?u?0:(n.count+1)*c:u?(n.count-1-e+n.cloneOffset)*c:(e+n.cloneOffset)*c,n.setProps(h,"",n.vars.animationSpeed),n.transitions?(n.vars.animationLoop&&n.atEnd||(n.animating=!1,n.currentSlide=n.animatingTo),n.container.unbind("webkitTransitionEnd transitionend"),n.container.bind("webkitTransitionEnd transitionend",function(){clearTimeout(n.ensureAnimationEnd),n.wrapup(c)}),clearTimeout(n.ensureAnimationEnd),n.ensureAnimationEnd=setTimeout(function(){n.wrapup(c)},n.vars.animationSpeed+100)):n.container.animate(n.args,n.vars.animationSpeed,n.vars.easing,function(){n.wrapup(c)})}n.vars.smoothHeight&&f.smoothHeight(n.vars.animationSpeed)}},n.wrapup=function(e){p||v||(0===n.currentSlide&&n.animatingTo===n.last&&n.vars.animationLoop?n.setProps(e,"jumpEnd"):n.currentSlide===n.last&&0===n.animatingTo&&n.vars.animationLoop&&n.setProps(e,"jumpStart")),n.animating=!1,n.currentSlide=n.animatingTo,n.vars.after(n)},n.animateSlides=function(){!n.animating&&e&&n.flexAnimate(n.getTarget("next"))},n.pause=function(){clearInterval(n.animatedSlides),n.animatedSlides=null,n.playing=!1,n.vars.pausePlay&&f.pausePlay.update("play"),n.syncExists&&f.sync("pause")},n.play=function(){n.playing&&clearInterval(n.animatedSlides),n.animatedSlides=n.animatedSlides||setInterval(n.animateSlides,n.vars.slideshowSpeed),n.started=n.playing=!0,n.vars.pausePlay&&f.pausePlay.update("pause"),n.syncExists&&f.sync("play")},n.stop=function(){n.pause(),n.stopped=!0},n.canAdvance=function(e,t){var a=m?n.pagingCount-1:n.last;return!!t||(!(!m||n.currentItem!==n.count-1||0!==e||"prev"!==n.direction)||(!m||0!==n.currentItem||e!==n.pagingCount-1||"next"===n.direction)&&(!(e===n.currentSlide&&!m)&&(!!n.vars.animationLoop||(!n.atEnd||0!==n.currentSlide||e!==a||"next"===n.direction)&&(!n.atEnd||n.currentSlide!==a||0!==e||"next"!==n.direction))))},n.getTarget=function(e){return n.direction=e,"next"===e?n.currentSlide===n.last?0:n.currentSlide+1:0===n.currentSlide?n.last:n.currentSlide-1},n.setProps=function(e,t,a){var i=function(){var a=e||(n.itemW+n.vars.itemMargin)*n.move*n.animatingTo;return-1*function(){if(v)return"setTouch"===t?e:u&&n.animatingTo===n.last?0:u?n.limit-(n.itemW+n.vars.itemMargin)*n.move*n.animatingTo:n.animatingTo===n.last?n.limit:a;switch(t){case"setTotal":return u?(n.count-1-n.currentSlide+n.cloneOffset)*e:(n.currentSlide+n.cloneOffset)*e;case"setTouch":return e;case"jumpEnd":return u?e:n.count*e;case"jumpStart":return u?n.count*e:e;default:return e}}()+"px"}();n.transitions&&(i=d?"translate3d(0,"+i+",0)":"translate3d("+i+",0,0)",a=void 0!==a?a/1e3+"s":"0s",n.container.css("-"+n.pfx+"-transition-duration",a),n.container.css("transition-duration",a)),n.args[n.prop]=i,(n.transitions||void 0===a)&&n.container.css(n.args),n.container.css("transform",i)},n.setup=function(e){if(p)n.slides.css({width:"100%",float:"left",marginRight:"-100%",position:"relative"}),"init"===e&&(s?n.slides.css({opacity:0,display:"block",webkitTransition:"opacity "+n.vars.animationSpeed/1e3+"s ease",zIndex:1}).eq(n.currentSlide).css({opacity:1,zIndex:2}):0==n.vars.fadeFirstSlide?n.slides.css({opacity:0,display:"block",zIndex:1}).eq(n.currentSlide).css({zIndex:2}).css({opacity:1}):n.slides.css({opacity:0,display:"block",zIndex:1}).eq(n.currentSlide).css({zIndex:2}).animate({opacity:1},n.vars.animationSpeed,n.vars.easing)),n.vars.smoothHeight&&f.smoothHeight();else{var t,a;"init"===e&&(n.viewport=$('<div class="'+i+'viewport"></div>').css({overflow:"hidden",position:"relative"}).appendTo(n).append(n.container),n.cloneCount=0,n.cloneOffset=0,u&&(a=$.makeArray(n.slides).reverse(),n.slides=$(a),n.container.empty().append(n.slides))),n.vars.animationLoop&&!v&&(n.cloneCount=2,n.cloneOffset=1,"init"!==e&&n.container.find(".clone").remove(),n.container.append(f.uniqueID(n.slides.first().clone().addClass("clone")).attr("aria-hidden","true")).prepend(f.uniqueID(n.slides.last().clone().addClass("clone")).attr("aria-hidden","true"))),n.newSlides=$(n.vars.selector,n),t=u?n.count-1-n.currentSlide+n.cloneOffset:n.currentSlide+n.cloneOffset,d&&!v?(n.container.height(200*(n.count+n.cloneCount)+"%").css("position","absolute").width("100%"),setTimeout(function(){n.newSlides.css({display:"block"}),n.doMath(),n.viewport.height(n.h),n.setProps(t*n.h,"init")},"init"===e?100:0)):(n.container.width(200*(n.count+n.cloneCount)+"%"),n.setProps(t*n.computedW,"init"),setTimeout(function(){n.doMath(),n.newSlides.css({width:n.computedW,marginRight:n.computedM,float:"left",display:"block"}),n.vars.smoothHeight&&f.smoothHeight()},"init"===e?100:0))}v||n.slides.removeClass(i+"active-slide").eq(n.currentSlide).addClass(i+"active-slide"),n.vars.init(n)},n.doMath=function(){var e=n.slides.first(),t=n.vars.itemMargin,a=n.vars.minItems,i=n.vars.maxItems;n.w=void 0===n.viewport?n.width():n.viewport.width(),n.h=e.height(),n.boxPadding=e.outerWidth()-e.width(),v?(n.itemT=n.vars.itemWidth+t,n.itemM=t,n.minW=a?a*n.itemT:n.w,n.maxW=i?i*n.itemT-t:n.w,n.itemW=n.minW>n.w?(n.w-t*(a-1))/a:n.maxW<n.w?(n.w-t*(i-1))/i:n.vars.itemWidth>n.w?n.w:n.vars.itemWidth,n.visible=Math.floor(n.w/n.itemW),n.move=n.vars.move>0&&n.vars.move<n.visible?n.vars.move:n.visible,n.pagingCount=Math.ceil((n.count-n.visible)/n.move+1),n.last=n.pagingCount-1,n.limit=1===n.pagingCount?0:n.vars.itemWidth>n.w?n.itemW*(n.count-1)+t*(n.count-1):(n.itemW+t)*n.count-n.w-t):(n.itemW=n.w,n.itemM=t,n.pagingCount=n.count,n.last=n.count-1),n.computedW=n.itemW-n.boxPadding,n.computedM=n.itemM},n.update=function(e,t){n.doMath(),v||(e<n.currentSlide?n.currentSlide+=1:e<=n.currentSlide&&0!==e&&(n.currentSlide-=1),n.animatingTo=n.currentSlide),n.vars.controlNav&&!n.manualControls&&("add"===t&&!v||n.pagingCount>n.controlNav.length?f.controlNav.update("add"):("remove"===t&&!v||n.pagingCount<n.controlNav.length)&&(v&&n.currentSlide>n.last&&(n.currentSlide-=1,n.animatingTo-=1),f.controlNav.update("remove",n.last))),n.vars.directionNav&&f.directionNav.update()},n.addSlide=function(e,t){var a=$(e);n.count+=1,n.last=n.count-1,d&&u?void 0!==t?n.slides.eq(n.count-t).after(a):n.container.prepend(a):void 0!==t?n.slides.eq(t).before(a):n.container.append(a),n.update(t,"add"),n.slides=$(n.vars.selector+":not(.clone)",n),n.setup(),n.vars.added(n)},n.removeSlide=function(e){var t=isNaN(e)?n.slides.index($(e)):e;n.count-=1,n.last=n.count-1,isNaN(e)?$(e,n.slides).remove():d&&u?n.slides.eq(n.last).remove():n.slides.eq(e).remove(),n.doMath(),n.update(t,"remove"),n.slides=$(n.vars.selector+":not(.clone)",n),n.setup(),n.vars.removed(n)},f.init()},$(window).blur(function(t){e=!1}).focus(function(t){e=!0}),$.flexslider.defaults={namespace:"flex-",selector:".slides > li",animation:"fade",easing:"swing",direction:"horizontal",reverse:!1,animationLoop:!0,smoothHeight:!1,startAt:0,slideshow:!0,slideshowSpeed:7e3,animationSpeed:600,initDelay:0,randomize:!1,fadeFirstSlide:!0,thumbCaptions:!1,pauseOnAction:!0,pauseOnHover:!1,pauseInvisible:!0,useCSS:!0,touch:!0,video:!1,controlNav:!0,directionNav:!0,prevText:"Previous",nextText:"Next",keyboard:!0,multipleKeyboard:!1,mousewheel:!1,pausePlay:!1,pauseText:"Pause",playText:"Play",controlsContainer:"",manualControls:"",customDirectionNav:"",sync:"",asNavFor:"",itemWidth:0,itemMargin:0,minItems:1,maxItems:0,move:0,allowOneSlide:!0,start:function(){},before:function(){},after:function(){},end:function(){},added:function(){},removed:function(){},init:function(){}},$.fn.flexslider=function(e){if(void 0===e&&(e={}),"object"==typeof e)return this.each(function(){var t=$(this),a=e.selector?e.selector:".slides > li",n=t.find(a);1===n.length&&!1===e.allowOneSlide||0===n.length?(n.fadeIn(400),e.start&&e.start(t)):void 0===t.data("flexslider")&&new $.flexslider(this,e)});var t=$(this).data("flexslider");switch(e){case"play":t.play();break;case"pause":t.pause();break;case"stop":t.stop();break;case"next":t.flexAnimate(t.getTarget("next"),!0);break;case"prev":case"previous":t.flexAnimate(t.getTarget("prev"),!0);break;default:"number"==typeof e&&t.flexAnimate(e,!0)}}}(jQuery);
 // ==================================================
-// fancyBox v3.1.20
+// fancyBox v3.1.25
 //
 // Licensed GPLv3 for open source use
 // or fancyBox Commercial License for commercial use
@@ -1981,7 +1981,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             slide.$content = $( content ).appendTo( slide.$slide );
 
             if ( slide.opts.smallBtn && !slide.$smallBtn ) {
-                slide.$smallBtn = $( self.translate( slide, slide.opts.btnTpl.smallBtn ) ).appendTo( slide.$content );
+                slide.$smallBtn = $( self.translate( slide, slide.opts.btnTpl.smallBtn ) ).appendTo( slide.$content.filter('div').first() );
             }
 
             this.afterLoad( slide );
@@ -2109,8 +2109,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             if ( effect === 'zoom' ) {
                 end = self.getFitPos( slide );
 
-                end.scaleX = Math.round( (end.width  / start.width)  * 100 ) / 100;
-                end.scaleY = Math.round( (end.height / start.height) * 100 ) / 100;
+                end.scaleX = end.width  / start.width;
+                end.scaleY = end.height / start.height;
 
                 delete end.width;
                 delete end.height;
@@ -2499,7 +2499,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             self.trigger( 'afterClose', e );
 
             // Place back focus
-            if ( self.$lastFocus && !!!self.current.focusBack ) {
+            if ( self.$lastFocus && !!self.current.opts.backFocus ) {
                 self.$lastFocus.focus();
             }
 
@@ -2646,7 +2646,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
     $.fancybox = {
 
-        version  : "3.1.20",
+        version  : "3.1.25",
         defaults : defaults,
 
 
@@ -2872,8 +2872,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
                     if ( to.scaleX !== undefined && to.scaleY !== undefined ) {
                         $el.css( 'transition-duration', '0ms' );
 
-                        to.width  = $el.width()  * to.scaleX;
-                        to.height = $el.height() * to.scaleY;
+                        to.width  = Math.round( $el.width()  * to.scaleX );
+                        to.height = Math.round( $el.height() * to.scaleY );
 
                         to.scaleX = 1;
                         to.scaleY = 1;
@@ -2923,12 +2923,18 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
     function _run( e ) {
         var target	= e.currentTarget,
             opts	= e.data ? e.data.options : {},
-            items	= e.data ? e.data.items : [],
+            items	= opts.selector ? $( opts.selector ) : ( e.data ? e.data.items : [] ),
             value	= $(target).attr( 'data-fancybox' ) || '',
-            index	= 0;
+            index	= 0,
+            active  = $.fancybox.getInstance();
 
         e.preventDefault();
         e.stopPropagation();
+
+        // Avoid opening multiple times
+        if ( active && active.current.opts.$orig.is( target ) ) {
+            return;
+        }
 
         // Get all related items and find index for clicked one
         if ( value ) {
@@ -2961,7 +2967,6 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         if ( selector ) {
 
             $( 'body' ).off( 'click.fb-start', selector ).on( 'click.fb-start', selector, {
-                items   : $( selector ),
                 options : options
             }, _run );
 
@@ -2983,7 +2988,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
     $D.on( 'click.fb-start', '[data-fancybox]', _run );
 
-}( window, document, window.jQuery ));
+}( window, document, window.jQuery || jQuery ));
 
 // ==========================================================================
 //
@@ -3086,13 +3091,25 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 		// Examples:
 		// http://maps.google.com/?ll=48.857995,2.294297&spn=0.007666,0.021136&t=m&z=16
-		// http://maps.google.com/?ll=48.857995,2.294297&spn=0.007666,0.021136&t=m&z=16
-		// https://www.google.lv/maps/place/Googleplex/@37.4220041,-122.0833494,17z/data=!4m5!3m4!1s0x0:0x6c296c66619367e0!8m2!3d37.4219998!4d-122.0840572
-		google_maps : {
+		// https://www.google.com/maps/@37.7852006,-122.4146355,14.65z
+		// https://www.google.com/maps/place/Googleplex/@37.4220041,-122.0833494,17z/data=!4m5!3m4!1s0x0:0x6c296c66619367e0!8m2!3d37.4219998!4d-122.0840572
+		gmap_place : {
 			matcher : /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(((maps\/(place\/(.*)\/)?\@(.*),(\d+.?\d+?)z))|(\?ll=))(.*)?/i,
 			type    : 'iframe',
 			url     : function (rez) {
 				return '//maps.google.' + rez[2] + '/?ll=' + ( rez[9] ? rez[9] + '&z=' + Math.floor(  rez[10]  ) + ( rez[12] ? rez[12].replace(/^\//, "&") : '' )  : rez[12] ) + '&output=' + ( rez[12] && rez[12].indexOf('layer=c') > 0 ? 'svembed' : 'embed' );
+			}
+		},
+
+		// Examples:
+		// https://www.google.com/maps/search/Empire+State+Building/
+		// https://www.google.com/maps/search/?api=1&query=centurylink+field
+		// https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
+		gmap_search : {
+			matcher : /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(maps\/search\/)(.*)/i,
+			type    : 'iframe',
+			url     : function (rez) {
+				return '//maps.google.' + rez[2] + '/maps?q=' + rez[5].replace('query=', 'q=').replace('api=1', '') + '&output=embed';
 			}
 		}
 	};
@@ -3182,7 +3199,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 					item.contentProvider = provider;
 
-					item.opts.slideClass += ' fancybox-slide--' + ( provider == 'google_maps' ? 'map' : 'video' );
+					item.opts.slideClass += ' fancybox-slide--' + ( provider == 'gmap_place' || provider == 'gmap_search' ? 'map' : 'video' );
 				}
 
 			} else {
@@ -3264,7 +3281,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 	};
 
 	var isClickable = function( $el ) {
-		if ( $el.is('a,button,input,select,textarea') || $.isFunction( $el.get(0).onclick ) ) {
+
+		if ( $el.is('a,button,input,select,textarea') || $.isFunction( $el.get(0).onclick ) || $el.data('selectable') ) {
 			return true;
 		}
 
@@ -3381,8 +3399,6 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 		$(document).on( isTouchDevice ? 'touchend.fb.touch touchcancel.fb.touch' : 'mouseup.fb.touch mouseleave.fb.touch',  $.proxy(self, "ontouchend"));
 		$(document).on( isTouchDevice ? 'touchmove.fb.touch' : 'mousemove.fb.touch',  $.proxy(self, "ontouchmove"));
 
-		e.stopPropagation();
-
 		if ( !(instance.current.opts.touch || instance.canPan() ) || !( $target.is( self.$stage ) || self.$stage.find( $target ).length ) ) {
 
 			// Prevent ghosting
@@ -3392,6 +3408,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 			return;
 		}
+
+		e.stopPropagation();
 
 		if ( !( $.fancybox.isMobile && ( isScrollable( self.$target ) || isScrollable( self.$target.parent() ) ) ) ) {
 			e.preventDefault();
@@ -4369,12 +4387,16 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 	// If browser does not have Full Screen API, then simply unset default button template and stop
 	if ( !fn ) {
-		$.fancybox.defaults.btnTpl.fullScreen = false;
+
+		if ( $ && $.fancybox ) {
+			$.fancybox.defaults.btnTpl.fullScreen = false;
+		}
 
 		return;
 	}
 
 	var FullScreen = {
+
 		request : function ( elem ) {
 
 			elem = elem || document.documentElement;
@@ -4471,6 +4493,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 			instance.update( true, true, 0 );
 		}
+
+		instance.trigger('onFullscreenChange', FullScreen.isFullscreen() );
 
 	});
 
@@ -4740,11 +4764,14 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 		};
 	}
 
+	// Create new history entry only once
+	var shouldCreateHistory = true;
+
 	// Variable containing last hash value set by fancyBox
 	// It will be used to determine if fancyBox needs to close after hash change is detected
     var currentHash = null;
 
-	// Throtlling the history change
+	// Throttling the history change
 	var timerID = null;
 
 	// Get info about gallery name and current index from url
@@ -4775,21 +4802,22 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 			// If we can find element matching 'data-fancybox' atribute, then trigger click event for that ..
 			$el = $( "[data-fancybox='" + $.escapeSelector( url.gallery ) + "']" ).eq( url.index - 1 );
 
-            if ( $el.length ) {
-				$el.trigger( 'click' );
-
-			} else {
-
+            if ( !$el.length ) {
 				// .. if not, try finding element by ID
-				$( "#" + $.escapeSelector( url.gallery ) + "" ).trigger( 'click' );
+				$el = $( "#" + $.escapeSelector( url.gallery ) + "" );
+			}
 
+			if ( $el.length ) {
+				shouldCreateHistory = false;
+
+				$el.trigger( 'click' );
 			}
 
         }
 	}
 
 	// Get gallery name from current instance
-	function getGallery( instance ) {
+	function getGalleryID( instance ) {
 		var opts;
 
 		if ( !instance ) {
@@ -4798,7 +4826,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 		opts = instance.current ? instance.current.opts : instance.opts;
 
-		return opts.$orig ? opts.$orig.data( 'fancybox' ) : ( opts.hash || '' );
+		return opts.hash || ( opts.$orig ? opts.$orig.data( 'fancybox' ) : ''  );
 	}
 
 	// Star when DOM becomes ready
@@ -4822,7 +4850,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 					}
 
 					url     = parseUrl();
-					gallery = getGallery( instance );
+					gallery = getGalleryID( instance );
 
 					// Make sure gallery start index matches index from hash
 					if ( gallery && url.gallery && gallery == url.gallery ) {
@@ -4831,14 +4859,14 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 				},
 
-				'beforeShow.fb' : function( e, instance, current, firstRun ) {
+				'beforeShow.fb' : function( e, instance, current ) {
 					var gallery;
 
-					if ( current.opts.hash === false ) {
+					if ( !current || current.opts.hash === false ) {
 						return;
 					}
 
-		            gallery = getGallery( instance );
+		            gallery = getGalleryID( instance );
 
 		            // Update window hash
 		            if ( gallery && gallery !== '' ) {
@@ -4855,9 +4883,11 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 							}
 
 							timerID = setTimeout(function() {
-								window.history[ firstRun ? 'pushState' : 'replaceState' ]( {} , document.title, window.location.pathname + window.location.search + '#' +  currentHash );
+								window.history[ shouldCreateHistory ? 'pushState' : 'replaceState' ]( {} , document.title, window.location.pathname + window.location.search + '#' +  currentHash );
 
 								timerID = null;
+
+								shouldCreateHistory = false;
 
 							}, 300);
 
@@ -4880,7 +4910,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 						return;
 					}
 
-					gallery  = getGallery( instance );
+					gallery  = getGalleryID( instance );
 					origHash = instance && instance.opts.origHash ? instance.opts.origHash : '';
 
 		            // Remove hash from location bar
@@ -4917,18 +4947,12 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 				}
 			});
 
-			// If navigating away from current page
-			$(window).one('unload.fb popstate.fb', function() {
-				$.fancybox.getInstance( 'close', true, 0 );
-			});
-
 			// Check current hash and trigger click event on matching element to start fancyBox, if needed
 			triggerFromUrl( parseUrl() );
 
 		}, 50);
 
     });
-
 
 }(document, window, window.jQuery));
 
@@ -61059,6 +61083,12 @@ function SwiperFactory (Dom7) {
           if (!s.params.breakpoints) return false;
           var breakpoint = false;
           var points = [], point;
+
+          // If params are passed as a string, parse to a JSON object
+          if( typeof(s.params.breakpoints) === 'string' ){
+            s.params.breakpoints = JSON.parse(s.params.breakpoints);
+          }
+
           for ( point in s.params.breakpoints ) {
               if (s.params.breakpoints.hasOwnProperty(point)) {
                   points.push(point);
@@ -62723,6 +62753,7 @@ function SwiperFactory (Dom7) {
           s.setWrapperTransition(0);
           if (typeof runCallbacks === 'undefined') runCallbacks = true;
           if (s.lazy) s.lazy.onTransitionEnd();
+          s.update();
           if (runCallbacks) {
               s.emit('onTransitionEnd', s);
               if (s.activeIndex !== s.previousIndex) {
@@ -64606,6 +64637,7 @@ function SwiperDirective (Swiper, $rootScope, $timeout) {
       $attribute.prevButton = '.' + $scope.uuid + ' .swiper-button-prev';
 
       $timeout(function() {
+        ($attribute && $attribute.speed) && ($attribute.speed = parseInt($attribute.speed));
         $scope.instance = new Swiper ('.' + $scope.uuid, $attribute);
       });
 
@@ -67750,22 +67782,31 @@ var myApp = angular.module('myApp', [
     'ui.swiper',
     'angularPromiseButtons',
     'toastr',
-    'ngCookies'
+    'ngCookies',
+    'app.directives',
 ])
 
 
 
 // Define all the routes below
-myApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
+myApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider,$sceDelegateProvider) {
     var tempateURL = "views/template/template.html"; //Default Template URL
     //$httpProvider.defaults.withCredentials = true;
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+    //$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     //$httpProvider.defaults.headers.post['X-CSRFToken'] = $.jStorage.get("csrftoken")
     //$httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
-    
-  //  $httpProvider.defaults.headers.post['X-CSRFToken'] = $cookies['csrftoken'];
+
+    //  $httpProvider.defaults.headers.post['X-CSRFToken'] = $cookies['csrftoken'];
+    $sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+        'self',
+        // Allow loading from our assets domain. **.
+        //'http://plnkr.co/edit/COnvjvoaYV643oQ46p9B?p=preview'
+    ]);
+    $sceDelegateProvider.resourceUrlBlacklist([
+    '']);
     // for http request with session
     $stateProvider
         .state('home', {
@@ -67786,12 +67827,12 @@ myApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locat
     $urlRouterProvider.otherwise("/");
     $locationProvider.html5Mode(isproduction);
 });
-myApp.run(['$http', '$cookies', function($http, $cookies) {
-	   
-	//$http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
-	//$http.defaults.headers.post['X-CSRFToken'] = $cookies.get("csrftoken");
-	$http.defaults.headers.put['X-CSRFToken'] = $cookies.csrftoken;
-	// $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+myApp.run(['$http', '$cookies', function ($http, $cookies) {
+
+    //$http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+    //$http.defaults.headers.post['X-CSRFToken'] = $cookies.get("csrftoken");
+    $http.defaults.headers.put['X-CSRFToken'] = $cookies.csrftoken;
+    // $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 }]);
 
@@ -67800,6 +67841,7 @@ myApp.config(function ($translateProvider) {
     $translateProvider.translations('en', LanguageEnglish);
     $translateProvider.translations('hi', LanguageHindi);
     $translateProvider.preferredLanguage('en');
+    $translateProvider.useSanitizeValueStrategy('escape');
 });
 var LanguageEnglish = {
   "ABOUT": "About",
@@ -67913,8 +67955,522 @@ myApp.directive('img', function ($compile, $parse) {
         };
     })
 
+    .directive('compTranslate', function ($compile, apiService,$sce) {
+        return {
+            restrict: 'A',
+            scope: true,
+            priority: 0,
+            compile: function (element, attrs) {
+                var originalText = element.text();
+                //var originalTooltip = attrs['tooltip'];
+                //console.log(originalText);
+                return {
+                    pre: function (scope, element, attrs) {
+                        scope.originalText = originalText;
+                        //scope.originalTooltip = originalTooltip;
+                    
+                        
+                        var translationChangeOccurred = function () {
+                            attrs.$observe('compTranslate', function(value) {
+                                var languageid = $.jStorage.get("language");
+                                var formData = { "text": value,"language":languageid };
+                                //console.log(element);
+                                //element.text(value);
+                                //element.html(apiService.translate(formdata));
+                                if(languageid == "en")
+                                {
+                                    
+                                    hcont=$.parseHTML(value);
+                                    element.html(hcont);
+                                }
+                                else 
+                                {
+                                    apiService.translate(formData).then( function (response) {
+                                        // html =$sce.trustAsHtml(response.data.data);
+                                        // bindhtml = "<span ng-bind-html='"+html+"'>{{"+html+"}}<span>";
+                                        //console.log(response.data.data);
+                                        element.html(response.data.data);
+                                    });
+                                }
+                                    // if (scope.originalTooltip) {
+                                //     attrs.$set('tooltip', translationService.translate(scope.originalTooltip));
+                                // }
+                                $compile(element.contents())(scope);
+                                
+                            });
+                        };
+                        //translation changes by default while linking!
+                        translationChangeOccurred();
+            
+                        scope.$on('$translationLanguageChanged', translationChangeOccurred);
+                    },
+                    post: function () {
+                    }
+                };
+            }
+        };
+    })
+    .directive('filterTranslate', function ($compile, apiService,$sce) {
+        return {
+            restrict: 'A',
+            scope: true,
+            priority: 0,
+            compile: function (element, attrs) {
+                var originalText = element.text();
+                //var originalTooltip = attrs['tooltip'];
+                //console.log(originalText);
+                return {
+                    pre: function (scope, element, attrs) {
+                        scope.originalText = originalText;
+                        //scope.originalTooltip = originalTooltip;
+                    
+                        var translationChangeOccurred = function () {
+                            attrs.$observe('filterTranslate', function(value) {
+                                var languageid = $.jStorage.get("language");
+                                value = value.replace(new RegExp('('+$(".chatinput").val()+')', 'gi'),
+                                    '<span class="highlighted"> $& </span>');
+                                var formData = { "text": value,"language":languageid };
+                                //console.log(element);
+                                //element.text(value);
+                                //element.html(apiService.translate(formdata));
+                                
+                                //console.log(value);
+                                if(languageid == "en")
+                                {
+                                    
+                                    hcont=$.parseHTML(value);
+                                    element.html(hcont);
+                                }
+                                else 
+                                {
+                                    apiService.translate(formData).then( function (response) {
+                                        // html =$sce.trustAsHtml(response.data.data);
+                                        // bindhtml = "<span ng-bind-html='"+html+"'>{{"+html+"}}<span>";
+                                        //console.log(response.data.data);
+                                        texttoreplace = response.data.data;
+                                        texttoreplace=texttoreplace.replace('<span class = \"highlighted\">', '<span class = "highlighted">'); 
+                                        texttoreplace=texttoreplace.replace('</ span>', '</span>'); 
+                                        element.html(texttoreplace);
+                                    });
+                                }
+                                    // if (scope.originalTooltip) {
+                                //     attrs.$set('tooltip', translationService.translate(scope.originalTooltip));
+                                // }
+                                $compile(element.contents())(scope);
+                                
+                            });
+                        };
+                        //translation changes by default while linking!
+                        translationChangeOccurred();
+            
+                        scope.$on('$translationLanguageChanged', translationChangeOccurred);
+                    },
+                    post: function () {
+                    }
+                };
+            }
+        };
+    })
+    .directive('compTranslater', function ($compile, apiService,$sce) {
+        return {
+            restrict: 'EA',
+            scope: true,
+            priority: 0,
+            compile: function (element, attrs) {
+                var originalText = element.text();
+                //var originalTooltip = attrs['tooltip'];
+                //console.log(originalText);
+                return {
+                    pre: function (scope, element, attrs) {
+                        scope.originalText = originalText;
+                        //scope.originalTooltip = originalTooltip;
+                    
+                        var hcont = "";
+                        var translationChangeOccurred = function () {
+                            attrs.$observe('compTranslater', function(value) {
+                                var languageid = $.jStorage.get("language");
+                                contents = attrs.content;  
+                                contents=contents.replace('↵',' <br> ');  
+                                //contents=contents.replace(" ",' <br> '); 
+                                contents = contents.replace("\n","<br>");     
+                                contents = contents.replace(new RegExp("../static/data_excel/", 'g'), adminurl2+'static/data_excel/');     
+                                var formData = { "text": contents,"language":languageid };
+                                //element.text(value);
+                                //element.html(apiService.translate(formdata));
+                                if(languageid == "en")
+                                {
+                                    hcont=$.parseHTML(contents);
+                                    element.html(hcont);
+                                }
+                                else 
+                                {
+                                    apiService.translate(formData).then( function (response) {
+                                        // html =$sce.trustAsHtml(response.data.data);
+                                        // bindhtml = "<span ng-bind-html='"+html+"'>{{"+html+"}}<span>";
+                                        //hcont = $sce.trustAsHtml(response.data.data);
+                                        hcont=$.parseHTML(response.data.data);
+                                        
+                                        //hcont= $compile(hcont)(scope);
+                                        element.html(hcont);
+                                        
+                                    });
+                                // if (scope.originalTooltip) {
+                                //     attrs.$set('tooltip', translationService.translate(scope.originalTooltip));
+                                // }
+                                }
+                                $compile(element.contents())(scope);
+                                
+                            });
+                            // scope.$watch(
+                            //     function(scope) {
+                            //         return scope.$eval(attrs.compile);
+                            //         //$compile(element.contents())(scope);
+                            //     },
+                            //     function(value) {
+                            //         // when the 'compile' expression changes
+                            //         // assign it into the current DOM
+                            //         element.html(hcont);
 
+                            //         // compile the new DOM and link it to the current
+                            //         // scope.
+                            //         // NOTE: we only compile .childNodes so that
+                            //         // we don't get into infinite loop compiling ourselves
+                            //         $compile(element.contents())(scope);
+                            //     }                                    
+                            // );
+                        };
+                        //translation changes by default while linking!
+                        translationChangeOccurred();
+            
+                        scope.$on('$translationLanguageChanged', translationChangeOccurred);
+                    },
+                    post: function () {
+                    }
+                };
+            }
+        };
+    })
+
+    myApp.directive('animatefade', function($timeout) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                $timeout(function(){
+                    var fadeDuration = 2000;
+                    //var onEvent = attrs.fade || "mouseover";
+                    var targetElement = $(this);
+                    //setInterval(anim.bind(this),800);
+                    // targetElement.fadeOut(fadeDuration, function(){
+                        targetElement.fadeIn(fadeDuration);                   
+                    // });  
+                    // See how the directive alone controls the events, not the scope
+                    // element.on(onEvent, function() {
+                    //     var targetElement = $('#' + attrs.fadeTarget);
+                    //     targetElement.fadeOut(fadeDuration, function(){
+                    //         targetElement.fadeIn(fadeDuration);                   
+                    //     });                
+                    // });
+                },2000);
+                
+            }
+        };
+    })
+    myApp.directive('formatPhone', function(){
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModelCtrl) {
+                function fromUser(text) {
+                    if (text) {
+                        if (text.length > 10)
+                        {
+                            alert("Please Enter 10 Digit Mobile No");
+                            mString = text.substring(0,text.length-1)
+                            //console.log(mString);
+                            $(element).val(mString);
+                            return mString;
+                        }
+                        else
+                             {
+                            var transformedInput = text.replace(/[^0-9-]/g, '');
+                            if (transformedInput !== text) {
+                                ngModelCtrl.$setViewValue(transformedInput);
+                                ngModelCtrl.$render();
+                            }
+                            return transformedInput;
+                        }
+                    }
+                    return undefined;
+                }
+                ngModelCtrl.$parsers.push(fromUser);
+            }
+        };
+    })
+    myApp.directive('formatGr', function(){
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModelCtrl) {
+                function fromUser(text) {
+                    if (text) {
+                        if (text.length > 7)
+                        {
+                            alert("Please Enter 7 Digit Grievance No");
+                            mString = text.substring(0,text.length-1)
+                            //console.log(mString);
+                            $(element).val(mString);
+                            return mString;
+                        }
+                        else
+                             {
+                            var transformedInput = text.replace(/[^0-9-]/g, '');
+                            if (transformedInput !== text) {
+                                ngModelCtrl.$setViewValue(transformedInput);
+                                ngModelCtrl.$render();
+                            }
+                            return transformedInput;
+                        }
+                    }
+                    return undefined;
+                }
+                ngModelCtrl.$parsers.push(fromUser);
+            }
+        };
+    })
+    myApp.directive('formatClaim', function(){
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModelCtrl) {
+                function fromUser(text) {
+                    if (text) {
+                        if (text.length > 5)
+                        {
+                            alert("Please Enter 5 Digit Claim No");
+                            mString = text.substring(0,text.length-1)
+                            //console.log(mString);
+                            $(element).val(mString);
+                            return mString;
+                        }
+                        else
+                             {
+                            var transformedInput = text.replace(/[^0-9-]/g, '');
+                            if (transformedInput !== text) {
+                                ngModelCtrl.$setViewValue(transformedInput);
+                                ngModelCtrl.$render();
+                            }
+                            return transformedInput;
+                        }
+                    }
+                    return undefined;
+                }
+                ngModelCtrl.$parsers.push(fromUser);
+            }
+        };
+    })
+    myApp.directive('formatPolicy', function(){
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModelCtrl) {
+                function fromUser(text) {
+                    if (text) {
+                        if (text.length > 16)
+                        {
+                            alert("Please Enter 16 Digit Policy No");
+                            mString = text.substring(0,text.length-1)
+                            //console.log(mString);
+                            $(element).val(mString);
+                            return mString;
+                        }
+                        else
+                             {
+                            var transformedInput = text.replace(/[^0-9-]/g, '');
+                            if (transformedInput !== text) {
+                                ngModelCtrl.$setViewValue(transformedInput);
+                                ngModelCtrl.$render();
+                            }
+                            return transformedInput;
+                        }
+                    }
+                    return undefined;
+                }
+                ngModelCtrl.$parsers.push(fromUser);
+            }
+        };
+    })
+    // .directive('dateInput',
+    //     function(dateFilter) {
+    //         return {
+    //             require: 'ngModel',
+    //             template: '<input type="date"></input>',
+    //             replace: true,
+    //             link: function(scope, elm, attrs, ngModelCtrl) {
+    //                 ngModelCtrl.$formatters.unshift(function (modelValue) {
+    //                     return dateFilter(modelValue, 'yyyy-MM-dd');
+    //                 });
+                    
+    //                 ngModelCtrl.$parsers.unshift(function(viewValue) {
+    //                     return new Date(viewValue);
+    //                 });
+    //             },
+    //         };
+    //     });
 ;
+/**
+ * Author: Nizar BOUSEBSI
+ * Description: AngularJS directive to process Speech Recognition in your Cordova & Web application.
+ * Usage: Add this directive in your Directives folder.
+ */
+
+angular.module('app.directives', []).directive('ngSpeechRecognitionStart', function ($timeout, $rootScope,apiService) {
+	return {
+		restrict: 'A',
+		link: function ($scope, $element, $attrs) {
+			
+			//if($rootScope.browser=="safari") 
+			{
+
+			// if($rootScope.browser=="chrome") {
+			// 	var recognition = new window.webkitSpeechRecognition();
+			// } else if($rootScope.browser=="firefox") {
+			// 	//var recognition = new ( SpeechRecognition || webkitSpeechRecognition || mozSpeechRecognition)();
+			// 	var recognition = new SpeechRecognition();
+			// } else if($rootScope.browser=="safari") {
+			// 	var recognition = new window.msSpeechRecognition();
+			// }
+			// else if($rootScope.browser=="opera") {
+			// 	var recognition = new window.oSpeechRecognition();
+			// }
+			// else if($rootScope.browser=="msie") {
+			// 	var recognition = new window.msSpeechRecognition();
+			// }
+			// else if($rootScope.browser=="android") {
+			// 	//alert("android");
+			// 	var recognition = new window.webkitSpeechRecognition();
+			// }
+			// else if($rootScope.browser=="ios") {
+			// 	var recognition = new window.webkitSpeechRecognition();
+			// }
+			var recognition = new window.webkitSpeechRecognition();
+			var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+			console.log("start");
+			var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+			recognition.continuous = true;
+			recognition.interimResults = false;
+			ignore_onend = false;
+			final_transcript = '';
+			recognition.lang = 'en-us';
+			
+			var recognitionIsAlreadyCalled = false;
+
+			$element.bind('touchstart mousedown', function (event) {
+				$scope.isHolded = true;
+				$(this).addClass('hover_effect');
+				// if (!navigator.getUserMedia) {
+				// 	navigator.getUserMedia = navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
+				// }
+				// navigator.getUserMedia({audio:true}, function() {
+				// 	//event.target.textContent = 'OK';
+				// 	console.log("Allow");
+				// }, function() {
+				// 	console.log("Error");
+				// 	//event.target.textContent = 'ERROR';
+				// });
+				$timeout(function () {
+					if ($scope.isHolded) {
+						$scope.$apply(function () {
+
+							if ($attrs.ngSpeechRecognitionStart) {
+								$scope.$eval($attrs.ngSpeechRecognitionStart)
+								
+							}
+
+							if (recognitionIsAlreadyCalled === false) {
+								recognitionIsAlreadyCalled = true;
+								recognition.start();
+								
+								recognition.onstart = function() {
+									recognizing = true;
+									console.log("Started event");
+								};
+							}
+						});
+					}
+				}, 600);
+			});
+
+			$element.bind('touchend mouseup', function (event) {
+				$scope.isHolded = false;
+				// navigator.getUserMedia({audio:false}, function() {
+				// 	//event.target.textContent = 'OK';
+				// 	console.log("Stop");
+				// }, function() {
+				// 	console.log("Error");
+				// 	//event.target.textContent = 'ERROR';
+				// });
+				$(this).removeClass('hover_effect');
+               // console.log($attrs.ngSpeechRecognitionEnd);
+				if ($attrs.ngSpeechRecognitionEnd) {
+					
+					$scope.$apply(function () {
+						
+						recognition.onerror = function(event) {
+							if (event.error == 'no-speech') {
+							ignore_onend = true;
+							console.log("No speech");
+							}
+							if (event.error == 'audio-capture') {
+							ignore_onend = true;
+							console.log("No mic");
+							}
+							if (event.error == 'not-allowed') {
+								// if (event.timeStamp - start_timestamp < 100) {
+								// 	//showInfo('info_blocked');
+								// } else {
+								// 	//showInfo('info_denied');
+								// }
+								ignore_onend = true;
+							}
+						};
+						recognition.onresult = function (event) {
+                            console.log("display+--",event);
+							if (event.results[0][0].transcript !== undefined) {
+								$rootScope.transcript = event.results[0][0].transcript;
+                                console.log($rootScope.transcript);
+								if (typeof $rootScope.transcript === 'string') {
+									 for (var i = event.resultIndex; i < event.results.length; ++i) {
+										if (event.results[i].isFinal) {
+											final_transcript += event.results[i][0].transcript;
+										} else {
+											interim_transcript += event.results[i][0].transcript;
+										}
+									}
+                                    $scope.$eval($attrs.ngSpeechRecognitionEnd);
+                                     console.log($attrs.ngSpeechRecognitionEnd);
+								}
+							}
+						}
+						recognition.stop();
+						recognitionIsAlreadyCalled = false;
+					});
+				}
+			});
+			}
+			// /else
+			// {
+			// 	$element.bind('touchstart mousedown', function (event) {
+			// 		apiService.startRecording("").then(function (response){
+            //            // console.log(response.data);
+			// 			//$rootScope.autocompletelist = response.data.data;
+			// 		});
+			// 	});
+			// 	$element.bind('touchend mouseup', function (event) {
+			// 		// apiService.stopRecording("").then(function (response){
+            //         //    // console.log(response.data);
+			// 		// 	//$rootScope.autocompletelist = response.data.data;
+			// 		// });
+			// 	});
+			// }
+		}
+	};
+})
 // JavaScript Document
 myApp.filter('myFilter', function () {
     // In the return function, we must pass in a single parameter which will be the data we will work on.
@@ -67953,8 +68509,32 @@ myApp.filter('newlines', function () {
       return text.replace(/\n/g, '<br/>');
   }
 });
+myApp.filter('langtranslate', function () {
+  return function(text) {
+      //return text.replace(/\n/g, '<br/>');
+      return (text);
+  }
+});
+myApp.filter('highlight', function($sce) {
+    return function(text, phrase) {
+        if (phrase) text = text.replace(new RegExp('('+phrase+')', 'gi'),
+        '<span class="highlighted">$1</span>')
 
+        return $sce.trustAsHtml(text)
+    }
+});
+// myApp.filter('formatdate', function($filter)
+// {
+//   return function(input)
+//   {
+//     if(input == null){ return ""; } 
+  
+//     var _date = $filter('date')(new Date(input), 'MMM dd yyyy');
+  
+//     return _date.toUpperCase();
 
+//   };
+// });
 myApp.service('TemplateService', function () {
     this.title = "Home";
     this.meta = "";
@@ -67970,14 +68550,13 @@ myApp.service('TemplateService', function () {
         this.chatcontent = "views/template/chat.html";
         this.footer = "views/template/footer.html";
     };
-
     this.getHTML = function (page) {
         this.init();
         var data = this;
         data.content = "views/" + page;
         return data;
     };
-
+    
     this.init();
 
 });
@@ -68011,10 +68590,11 @@ myApp.factory('NavigationService', function () {
         },
     };
 });
-myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer) {
-    adminurl2 = "http://cingulariti.com:8097/";
-    //adminurl2 = "http://localhost:8000/";
-    //adminurl2 = "http://192.168.0.129:8000/";
+myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$httpParamSerializerJQLike) {
+    adminurl2 = "http://35.161.160.7:8095/";
+    var adminurl3 = "http://localhost/api/";
+    var adminurl3 = "http://cingulariti.com:443/api/";
+    
     return {
 
         // This is a demo Service for POST Method.
@@ -68026,15 +68606,132 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer) 
             }).success(callback);
         },
         // This is a demo Service for POST Method.
+        login:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "init/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        policysubmit:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outForm/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        grsubmit:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outGr/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        claimsubmit:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outClaim/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        mobilenosubmit:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outFormMob/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        dobsubmit:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outDOB/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        getDthlinkRes:function(formData, callback) {
+            
+            return $http({
+                url:adminurl2+ "outDTL/"+formData.user_id+"/",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
+                method: 'POST',
+                data: $.param(formData)
+            })
+        },
+        getnews: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotnews/getnews",
+                method: 'POST',
+                data: formData
+            })
+        },
+        getmorenews: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotnews/getmorenews",
+                method: 'POST',
+                data: formData
+            })
+        },
+        loginsubmit: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotuser/loginuser",
+                method: 'POST',
+                data: formData
+            })
+        },
+        getautocomplete: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotautocomplete/getautocomplete",
+                method: 'POST',
+                data: formData
+            })
+        },
+        createpolicy: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotpolicy/createpolicy",
+                method: 'POST',
+                data: formData
+            })
+        },
+        editpolicy: function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotpolicy/editpolicy",
+                method: 'POST',
+                data: formData
+            })
+        },
+        viewpolicy:function(formData, callback) {
+            
+            return $http({
+                url:adminurl3+ "Chatbotpolicy/viewpolicy",
+                method: 'POST',
+                data: formData
+            })
+        },
         getCategoryFAQ: function (formData, callback) {
             return $http({
                 url: adminurl2 + 'out/'+formData.user_id+"/",
-                headers: {'X-CSRFToken':formData.csrfmiddlewaretoken },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8','X-CSRFToken':formData.csrfmiddlewaretoken },
                 method: 'POST',
-                //user_id: 2471,
                 data: $.param(formData),
-                //dataType:"json"
-                //withCredentials:false
+                dataType:"json"
             });
         },
         get_session: function (formData, callback) {
@@ -68042,36 +68739,57 @@ myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer) 
                 url: adminurl2 + 'get_session/',
                 //headers: {'X-CSRFToken':formData.csrfmiddlewaretoken },
                 method: 'POST',
-                //user_id: 2471,
                 data: $.param(formData),
                 dataType:"json"
-                //withCredentials:false
             });
         },
-
+        getCategoryQuestions: function (formData, callback) {
+            return $http({
+                url: adminurl3+'Categoryquestions/getCategoryQuestions',
+                method: 'POST',
+                data: (formData),
+            });
+        },
+        getCategoryDropdown: function (formData, callback) {
+            return $http({
+                url: adminurl3+'Category/getCategoryDropdown',
+                method: 'POST',
+                data: {},
+            });
+        },
+        translate: function (formData,callback) {
+            return $http({
+                url: adminurl3+'Translate/translate',
+                method: 'POST',
+                data: formData,
+            });
+        },
+        translatelink: function (formData,callback) {
+            return $http({
+                url: adminurl3+'Translate/translatelink',
+                method: 'POST',
+                data: formData,
+            });
+        },
+        viewbookmark:function(formData, callback) {
+            
+           
+            return $http({
+                url:adminurl3+ "Chathistory/viewbookmark",
+                method: 'POST',
+                data: formData,
+            });
+            
+        },
     };
 });
 myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationService, $timeout,$rootScope,apiService,$cookies) {
         $scope.template = TemplateService.getHTML("content/home.html");
         TemplateService.title = "Home"; //This is the Title of the Website
         $scope.navigation = NavigationService.getNavigation();
+        //$scope.categorydropdown = apiService.getCategoryDropdown({});
 
-
-        $rootScope.getCookie = function(c_name)
-		{
-			if (document.cookie.length > 0)
-			{
-				c_start = document.cookie.indexOf(c_name + "=");
-				if (c_start != -1)
-				{
-					c_start = c_start + c_name.length + 1;
-					c_end = document.cookie.indexOf(";", c_start);
-					if (c_end == -1) c_end = document.cookie.length;
-					return unescape(document.cookie.substring(c_start,c_end));
-				}
-			}
-			return "";
-		};
+        
         angular.element(document).ready(function () {
             apiService.get_session({}).then( function (response) {
                 $cookies.put("csrftoken",response.data.csrf_token);
@@ -68079,68 +68797,440 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $.jStorage.set("csrftoken",response.data.csrf_token);
                 //console.log(response.data);
             });
+            // if (navigator.geolocation) {
+            //     navigator.geolocation.getCurrentPosition(function(position){
+            //         $scope.$apply(function(){
+            //             $scope.position = position;
+            //             console.log(position);
+            //         });
+            //     });
+            // }
         });
-        $scope.mySlides = [
-            'http://flexslider.woothemes.com/images/kitchen_adventurer_cheesecake_brownie.jpg',
-            'http://flexslider.woothemes.com/images/kitchen_adventurer_lemon.jpg',
-            'http://flexslider.woothemes.com/images/kitchen_adventurer_donut.jpg',
-            'http://flexslider.woothemes.com/images/kitchen_adventurer_caramel.jpg'
-        ];
-        var abc = _.times(100, function (n) {
-            return n;
-        });
-        $rootScope.categorylist =  [
-            {id:"default",name:"Choose a Category"},
-            {id:"a1",name:"Account"},
-            {id:"b1",name:"Billing"},
-            {id:"br1",name:"Browser"},
-            {id:"r1",name:"Renewal"},
-            {id:"nc1",name:"New Connection"},
-        ];
-        $rootScope.links = [];
-        $rootScope.selectedCategory = $rootScope.categorylist[0];
-        $rootScope.pushLinkmsg = function(index,link) {
-            //alert(link);
-              
-            $rootScope.pushQuestionMsg(index,link);
-        };
-        $rootScope.getCategoryFAQ = function(category) {
-            $scope.formData = { user_input:category.id,csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id") };
-            //console.log($scope.formData);
-            apiService.getCategoryFAQ($scope.formData).then( function (response) {
-                $rootScope.links = response.data;
-                //console.log(response.data);
-            });
-        };
-        var i = 0;
-        $scope.buttonClick = function () {
-            i++;
-            console.log("This is a button Click");
-        };
+        
 
-        $timeout(function(){
-            $(document).on('click', '.portalapp', function(){ 
-                var linktext=$(this).text();
-                $rootScope.pushPortalLink($(this).attr("data-id"),$(this).attr("id"));
-                // if($(this).text().search(new RegExp("ION Portal", "i"))>=0)
-                // {
-                //     $rootScope.pushPortalLink($(this).attr("data-id"),$(this).attr("id"));
-                // }
-                // else if($(this).text().search(new RegExp("ION app", "i"))>=0)
-                // {
-                //     $rootScope.pushPortalLink($(this).attr("data-id"),$(this).attr("id"));
-                // }
-            });
-            $(document).on('click', '.faqques a', function(){ 
-                $rootScope.showFAQAns(this);
-            });
-            
-        });
+        
+
+    })
+    .controller('SpeechRecognitionController', function ($scope, $rootScope) {
+
+        var vm = this;
+
+        vm.displayTranscript = displayTranscript;
+        vm.transcript = '';
+        function displayTranscript() {
+            vm.transcript = $rootScope.transcript;
+            //console.log("transcript",$rootScope.transcript);
+            $(".chatinput").val($rootScope.transcript);
+            $rootScope.pushMsg(0,$rootScope.transcript,"");
+            //This is just to refresh the content in the view.
+            if (!$scope.$$phase) {
+                $scope.$digest();
+                console.log("transcript",$rootScope.transcript);
+            }
+        }
+        $rootScope.startspeech = function() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            console.log("new func");
+        // recognition.onresult = function(event) 
+            { 
+                console.log(event); 
+            }
+            recognition.start();
+        };
+        /**
+         * Handle the received transcript here.
+         * The result from the Web Speech Recognition will
+         * be set inside a $rootScope variable. You can use it
+         * as you want.
+         */
+        $rootScope.speechStarted = function() {
+            console.log("speech Started");
+        };
+    
 
     })
 
-    .controller('ChatCtrl', function ($scope, $rootScope,TemplateService, $timeout,$http,apiService,$state,$sce,$cookies) {
+    .controller('LoginCtrl', function ($scope, $uibModalInstance, items) {
+
+        $scope.items = items;
+        $scope.loginemail = items.email;
         
+    })
+    .controller('ChatCtrl', function ($scope, $rootScope,TemplateService, $timeout,$http,apiService,$state,$sce,$cookies,$location,$compile,$uibModal) {
+        $rootScope.regEx="/^[0-9]{10,10}$/;"
+        var url = $location.absUrl().split('?')[0];
+        // console.log(url);
+        // console.log(window.parent.location);
+         var pId = $location.path().split("/")[3]||"Unknown";    //path will be /person/show/321/, and array looks like: ["","person","show","321",""]
+        //console.log(document.baseURI);
+        $scope.getParentUrl =function() {
+            var isInIframe = (parent !== window),
+                parentUrl = null;
+
+            if (isInIframe) {
+                parentUrl = document.referrer;
+                console.log("in iframe");
+            }
+
+            return parentUrl;
+        };
+        //console.log($scope.getParentUrl());// returns blank if cross domain | if same domain returns null
+        var url2 = (window.location != window.parent.location)? document.referrer: document.location.href;
+        //console.log(url2);// returns blank if cross domain | returns url
+        //console.log(document.referrer);// returns blank if cross domain | returns url
+        // if(!window.top.location.href)
+        //     console.log("Different domain");
+        // else    
+        //     console.log("same domain");
+        //console.log(Browser.getParentUrl());
+        $rootScope.validDomain = false;
+        var referrerurl = $scope.getParentUrl();
+        // if(referrerurl == null || referrerurl == "http://104.46.103.162:8096/" || referrerurl == "http://localhost/flatlab/")
+        //     $rootScope.validDomain = true;
+        $rootScope.validDomain = true;
+        //$rootScope.validDomain = true;
+        // $rootScope.languagelist = [
+        //     {id:"en" , name:"English"},
+        //     {id:"hi" , name:"Hindi"},
+        //     {id:"mr" , name:"Marathi"},
+        //     {id:"gu" , name:"Gujarati"},
+        //     {id:"ta" , name:"Tamil"},
+        // ];
+        // $rootScope.selectedLanguage = $rootScope.languagelist[0];
+        $scope.formSubmitted = false;
+        $scope.loginerror=0;
+        $rootScope.isLoggedin = false;
+        $rootScope.hasPolicyNo = false;
+        $rootScope.showcreate = false;
+        $scope.policysuccess = 0;
+        $scope.editpolicysuccess = 0;
+        $scope.orderCount = 0;
+        $scope.viewPage = 1;
+        $scope.linkcount = 0;
+        $scope.policylist = [];
+        $scope.maxrow = 2;
+        $scope.shownextlink = false;
+        $scope.showprevlink = false;
+        $rootScope.$viewmodalInstance = {};
+        $rootScope.loginautherror = 0;
+        $rootScope.loginSuccess = 0;
+        $rootScope.newslist = {};
+        $rootScope.newsid="";
+
+        if($.jStorage.get("newslist"))
+        {
+            $rootScope.newslist = $.jStorage.get("newslist");
+            $rootScope.newsid = $.jStorage.get("newsid");
+        
+            if($rootScope.newslist.body.length > 0) 
+            {
+
+            }
+            else
+            {
+                
+                apiService.getnews({}).then(function (data){    
+                    $rootScope.newslist = data.data.data;
+                    $rootScope.newsid = data.data.id;
+                    $.jStorage.set("newslist",$rootScope.newslist);
+                    $.jStorage.set("newsid",$rootScope.newsid);
+                    
+                });
+            }
+        }
+        $rootScope.loginpasswordCancel = function() {
+            //console.log("dismissing");
+            $rootScope.$viewmodalInstance.dismiss('cancel');
+        };
+        $scope.toggleedit = function(e) {
+            $('.edittoggler').hide(500);
+            if($(".editform"+e).is(':visible')) {}
+            else
+                $(".editform"+e).slideToggle(500);
+        };
+        $scope.convertdate = function(d) {
+            return (new Date(d));
+        };
+        $scope.getNumber = function(num) {
+            return new Array(Math.round(num));   
+        };
+        $scope.getpage = function(page) {
+            $scope.viewPage = page;
+            $rootScope.getpolicy($(".skey").val(),$(".sval").val());
+        };
+        $scope.nextpage = function(page) {
+            $scope.viewPage = page +1;
+            $rootScope.getpolicy($(".skey").val(),$(".sval").val());
+        };
+        $scope.prevpage = function(page) {
+            $scope.viewPage = page -1;
+            $rootScope.getpolicy($(".skey").val(),$(".sval").val());
+        };
+        $scope.showcreateform = function(key,value) {
+            //console.log(key,"key");
+            //console.log(value,"value");
+            $rootScope.showcreate = true;
+        };
+        $rootScope.$viewmodalInstance1 = {};
+        $rootScope.selectbookmarkerror = 0;
+        $rootScope.openviewBookmark = function() {
+            $scope.formData = {userid:$.jStorage.get("sessionid")};
+            
+            
+            apiService.viewbookmark($scope.formData).then(function (callback){
+                $("#selectbookmark_list").html("");
+                
+                
+                $rootScope.$viewmodalInstance1 = $uibModal.open({
+                    scope: $rootScope,
+                    animation: true,
+                    size: 'sm',
+                    templateUrl: 'views/modal/selectbookmark.html',
+                    resolve: {
+                        items: function () {
+                        return callback.data.data;
+                        }
+                    },
+                    controller: 'ViewCtrl'
+                });
+                
+            });
+        };
+        $rootScope.selectbookmarkCancel = function() {
+            //console.log("dismissing");
+            $rootScope.$viewmodalInstance1.dismiss('cancel');
+        };
+        $rootScope.getpolicy = function(skey,sval) {
+            if($scope.viewPage < 1)
+                $scope.viewPage = 1;
+            $scope.policylist = [];
+            var formData = {orderCount : $scope.orderCount,viewPage:$scope.viewPage,skey:skey,sval:sval};
+            console.log(formData);
+            apiService.viewpolicy(formData).then(function (callback){
+                $scope.linkcount = (callback.data.data.count)/2;
+                //console.log($scope.linkcount);
+                var viewlist = callback.data.data.data; 
+                _.each(viewlist,function(v,k){
+                    viewlist[k].expirydate = new Date(v.expirydate); 
+                    viewlist[k].inceptiondate = new Date(v.inceptiondate); 
+                });
+                $scope.policylist =viewlist;
+                if(($scope.linkcount/$scope.viewPage) > 1)
+                {
+                    $scope.shownextlink = true;
+                }
+                else
+                {
+                    $scope.shownextlink = false;
+                }
+                if(($scope.linkcount/$scope.viewPage) == 1)
+                {
+                    $scope.showprevlink = true;
+                }
+                else
+                {
+                    $scope.showprevlink = false;
+                }
+            });
+        };
+        $rootScope.createpolicysubmit = function(policyno,inception_date,expiry_date,stamount,agent_name,prem_amount,agent_no,cust_no,cust_email) {
+            $scope.formData = {policyno:policyno,inception_date:inception_date,expiry_date:expiry_date,stamount:stamount,agent_name:agent_name,prem_amount:prem_amount,agent_no:agent_no,cust_no:cust_no,cust_email:cust_email,user_id:$cookies.get("session_id")};
+            console.log($scope.formData);
+            
+            apiService.createpolicy($scope.formData).then(function (callback){
+                if(callback.data)
+                {
+                    $scope.policysuccess = 1;
+                    // $scope.form.createpolicy.$setPristine();
+                    // $scope.form.createpolicy.$setUntouched();
+                    $(".createpolicy").find("input[type=text],input[type=email],input[type=number],input[type=date], textarea").val("");
+                    console.log("Success");
+                }
+                else
+                {
+                    $scope.policysuccess = -1;
+                    console.log("Fail");
+                }
+                    
+            });
+        };
+        $rootScope.editpolicysubmit = function(dataobject) {
+            $scope.formData = dataobject;
+            apiService.editpolicy($scope.formData).then(function (callback){
+                if(callback.data)
+                {
+                    $scope.editpolicysuccess = 1;
+                    // $scope.form.createpolicy.$setPristine();
+                    // $scope.form.createpolicy.$setUntouched();
+                    //$(".editpolicy").find("input[type=text],input[type=email],input[type=number],input[type=date], textarea").val("");
+                    console.log("Success");
+                }
+                else
+                {
+                    $scope.editpolicysuccess = -1;
+                    console.log("Fail");
+                }
+                    
+            });
+        };
+        $rootScope.isemp = $.jStorage.get("isemp");
+        $rootScope.keys = [
+            {id:'' ,name:"Select"},
+            {id:'policyno' ,name:"Policy No"},
+            {id:'customer_email',name:"Customer Email"},
+            {id:'agent_name',name:"Agent Name"},
+            {id:'customer_contact_no',name:"Customer Contact No"}
+        ];
+        $rootScope.haveclaim = function(v,index) {
+            console.log(v);
+            console.log(index);
+            if(v == 1)
+            {
+                $(".showclaimnoform"+index).show();
+                
+            }
+            else
+            {
+                $(".showclaimnoform"+index).hide();
+            }
+            $(".claim_no"+index).val("");
+        };
+        $rootScope.havegr = function(v,index) {
+            console.log(v);
+            console.log(index);
+            if(v == 1)
+            {
+                $(".showgrform"+index).show();
+                
+            }
+            else
+            {
+                $(".showgrform"+index).hide();
+            }
+            $(".gr_no"+index).val("");
+        };
+        $rootScope.havepolicy = function(v,index) {
+            console.log(v);
+            console.log(index);
+            if(v == 1)
+            {
+                $(".showpolicynoform"+index).show();
+                
+            }
+            else
+            {
+                $(".showpolicynoform"+index).hide();
+            }
+            $(".policy_no"+index).val("");
+        };
+        if($.jStorage.get("isLoggedin"))
+            $rootScope.isLoggedin = true;
+        $scope.login = function(name,email)
+        {
+            $scope.formData = {uname:name,uemail:email,user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id")};
+            
+            apiService.login($scope.formData).then(function (callback){
+                //console.log(callback);
+                $.jStorage.flush();
+                //if(email == "atul@gmail.com" && name == "Atul")
+                if(callback.data)
+                {
+                    angular.forEach(callback.data.tiledlist, function(value, key) {
+                        if(value.type=="DTHyperlink")
+                        {
+                            $rootScope.DthResponse(0,callback.data);
+                            $rootScope.isemp = false;
+                            $.jStorage.set("isemp",false);
+                            $.jStorage.set("id", 1);
+                            $.jStorage.set("name", name);
+                            $.jStorage.set("email", email);
+                            $.jStorage.set("isLoggedin", true);
+                            $.jStorage.set("sessionid",value.profile_id);
+                            $rootScope.isLoggedin = true;
+                            // $("#topic").text(data.data.data.tiledlist[0].topic);
+                            // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        }
+                        if(value.type=="employee form")
+                        {
+                            $rootScope.chatlist = [];
+                            $rootScope.pushSystemMsg(0,callback.data);
+                            $rootScope.isemp = true;
+                            $.jStorage.set("isemp",true);
+                           
+                            $rootScope.$viewmodalInstance = $uibModal.open({
+                                scope: $rootScope,
+                                animation: true,
+                                size: 'sm',
+                                templateUrl: 'views/modal/passwordlogin.html',
+                                resolve: {
+                                    items: function () {
+                                    return {email:email};
+                                    }
+                                },
+                                controller: 'LoginCtrl'
+                            });
+                            // $("#topic").text(data.data.data.tiledlist[0].topic);
+                            // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        }
+                        else
+                        {
+                            $.jStorage.set("id", 1);
+                            $.jStorage.set("name", name);
+                            $.jStorage.set("email", email);
+                            $.jStorage.set("isLoggedin", true);
+                            $rootScope.isLoggedin = true;
+                            $rootScope.isemp = false;
+                            $.jStorage.set("isemp",false);
+                            $.jStorage.set("sessionid",value.profile_id);
+                            //console.log(value.profile_id);
+                        }
+                    });
+                    
+                }
+                else {
+                    $scope.loginerror = -1;
+                }
+            });
+            
+        };
+        $rootScope.loginsubmit = function(email,password) {
+            var formData = {email:email,password:password};
+            apiService.loginsubmit(formData).then(function (callback){
+                //console.log(callback);
+                if(!callback.data.value)
+                {
+                    $rootScope.loginautherror = -1;
+                }
+                else
+                {
+                    $rootScope.loginautherror = 0;
+                    $rootScope.loginSuccess = 1;
+                    $rootScope.loginpasswordCancel();
+                    $rootScope.isemp = true;
+                    $.jStorage.set("isemp",true);
+                    $.jStorage.set("id", 1);
+                    $.jStorage.set("name", name);
+                    $.jStorage.set("email", email);
+                    $.jStorage.set("isLoggedin", true);
+                    $rootScope.isLoggedin = true;
+                }
+            });
+        };
+        $scope.logout = function()
+        {
+            $.jStorage.flush();
+            $rootScope.isemp = false;
+            $rootScope.isLoggedin = false;
+            $rootScope.chatlist = [];
+            $.jStorage.set("showchat",false);
+            $rootScope.chatOpen = false;
+            $rootScope.links = [];
+            $rootScope.firstMsg = true;
+            var msg = {Text:"Hi, How may I help you ?",type:"SYS_FIRST"};
+            $rootScope.pushSystemMsg(0,msg); 
+        };
         $rootScope.autocompletelist = [];
         $rootScope.chatOpen = false;
         $rootScope.showTimeoutmsg = false;
@@ -68159,6 +69249,21 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.autolistvalue="";
         $rootScope.showMsgLoader=false;
         $rootScope.rate_count= 0;
+        $rootScope.getCookie = function(c_name)
+		{
+			if (document.cookie.length > 0)
+			{
+				c_start = document.cookie.indexOf(c_name + "=");
+				if (c_start != -1)
+				{
+					c_start = c_start + c_name.length + 1;
+					c_end = document.cookie.indexOf(";", c_start);
+					if (c_end == -1) c_end = document.cookie.length;
+					return unescape(document.cookie.substring(c_start,c_end));
+				}
+			}
+			return "";
+		};
         $rootScope.scrollChatWindow = function() {
             $timeout(function(){
                 var chatHeight = $("ul.chat").height();
@@ -68166,14 +69271,16 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             });
         };
         $rootScope.iframeHeight = window.innerHeight-53;
+        $rootScope.links = [];
         
         $rootScope.getDatetime = function() {
             //return (new Date).toLocaleFormat("%A, %B %e, %Y");
             return currentTime = new Date();
         };
         $rootScope.chatText = "";
+        $rootScope.answers = "";
         $rootScope.getAutocomplete = function(chatText) {
-            // $rootScope.showTimeoutmsg = false;
+            $rootScope.showTimeoutmsg = false;
             // if($rootScope.showTimeoutmsg == false && chatText=="") 
             // {
             //     $timeout(function () {
@@ -68182,20 +69289,22 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             //         $rootScope.pushSystemMsg(0,msg);
             //     },60000);
             // }
-            // $rootScope.chatText = chatText;
-            // if(chatText == "" || chatText == " " || chatText == null)
-            //     $rootScope.autocompletelist = [];
-            // else {
-            //     $rootScope.chatdata = { string:$rootScope.chatText};
-            //     apiService.getautocomplete($rootScope.chatdata).then(function (response){
-            //            // console.log(response.data);
-            //         $rootScope.autocompletelist = response.data.data;
-            //     });
-            // }
-        };
-        $rootScope.showFAQAns = function(e) {
-            $(e).parent().parent().parent().find('.faqans').slideDown();
-            //$rootScope.scrollChatWindow();
+            $rootScope.chatText = chatText;
+            if(chatText == "" || chatText == " " || chatText == null)
+                $rootScope.autocompletelist = [];
+            else {
+                $rootScope.chatdata = { string:$rootScope.chatText};
+                apiService.getautocomplete($rootScope.chatdata).then(function (response){
+                       // console.log(response.data);
+                    $rootScope.autocompletelist = response.data.data;
+                });
+            }
+            //var languageid = $.jStorage.get("language");
+            //$scope.formData = {"text": chatText,"language":languageid };
+            // apiService.translate($scope.formData).then( function (response) {
+            //     //$(".chatinput").val(response.data.data);
+            //     console.log(response.data.data);
+            // });
         };
         $rootScope.pushSystemMsg = function(id,value) {
             $rootScope.chatmsgid = id;
@@ -68214,53 +69323,65 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             $rootScope.chatmsgid = id;
             $rootScope.chatmsg = value;
             var value2 = $rootScope.links;
-            if(value2.tiledlist[0].link[id] != "")
+            if(value2[id].link != "" )
             {
                 var linkdata="";
-                final_link = value2.tiledlist[0].link[id].split("<br>");
-                _.each(final_link, function(value, key) {
-                    //console.log(key);
-                    var dummy = "id='"+key+"' data-id='"+id+"' ng-click='pushPortalLink("+id+","+key+");'";
-                    linkdata += "<p class='portalapp' "+dummy+">"+value+"</p>";
-                   //console.log(linkdata);
-                   
+                var prev_res = false;
+                
+                final_link = value2[id].link.split("<br>");
+                var languageid = $.jStorage.get("language");
+                $scope.formData = {"items": final_link,"language":languageid,arr_index:id };
+                apiService.translatelink($scope.formData).then( function (response) {
+                    value2.queslink=response.data.data.linkdata;
+                    value2.queslink = $sce.trustAsHtml(value2.queslink);
+                    msg2={"queslink":angular.copy(value2.queslink),type:"cat_faq"};
+                    $timeout(function(){
+                        $rootScope.chatlist.push({id:id,msg:msg2,position:"left",curTime: $rootScope.getDatetime()});
+                        $rootScope.showMsgLoader=false;
+                        $rootScope.scrollChatWindow();
+                    },2000);
                 });
-                value2.queslink=linkdata;
+                
             }
+            
             else
             {    
-                //value2.queslink=_.replace(value2.tiledlist[0].answer[id], '../static/data_excel/', adminurl2+'static/data_excel/');
-                value2.queslink = value2.tiledlist[0].answer[id].replace(new RegExp("../static/data_excel/", 'g'), adminurl2+'static/data_excel/');
-                //value2.queslink=value2.tiledlist[0].answer[id];
+                value2.queslink = value2[id].answers.replace(new RegExp("../static/data_excel/", 'g'), adminurl2+'static/data_excel/');
+                value2.queslink = $sce.trustAsHtml(value2.queslink);
+            
+                msg2={"queslink":angular.copy(value2.queslink),type:"cat_faqlink"};
+                $timeout(function(){
+                    $rootScope.chatlist.push({id:id,msg:msg2,position:"left",curTime: $rootScope.getDatetime()});
+                    $rootScope.showMsgLoader=false;
+                    $rootScope.scrollChatWindow();
+                },2000);
             }
-                //$compile(linkdata)($scope);
-            $rootScope.chatlist.push({id:id,msg:angular.copy(value2),position:"left",curTime: $rootScope.getDatetime()});
-            $rootScope.showMsgLoader=false;
-            //$.jStorage.set("chatlist",$rootScope.chatlist);
-            $timeout(function(){
-                $rootScope.scrollChatWindow();
-            });
+            
             
         };
+        
         $rootScope.pushPortalLink= function(id,type) {
             console.log(id,"index");//index of array
             console.log(type,"value");// 0-ion portal ,1-ion app
             $rootScope.chatmsgid = id;
             $rootScope.chatmsg = type;
             var value3 = $rootScope.links;
-            if(value3.tiledlist[0].answer[id] != "")
+            if(value3[id].answers != "")
             {
                 var answer1 =new Array();
-                answer1 = value3.tiledlist[0].answer[id].split("(2nd)");
+                answer1 = value3[id].answers.split("(2nd)");
                 if(type==0)
 				    answer1 = answer1[0];
                 else if(type==1)
                     answer1 = answer1[1];
+                answer1 = answer1.replace("\n", "<br />", "g");
                 value3.queslink=answer1;
                 
             }
+            value3.queslink = $sce.trustAsHtml(value3.queslink);
             //$compile(linkdata)($scope);
-            $rootScope.chatlist.push({id:id,msg:angular.copy(value3),position:"left",curTime: $rootScope.getDatetime()});
+            msg2={"queslink":angular.copy(value3.queslink),type:"cat_faqlink"};
+            $rootScope.chatlist.push({id:id,msg:msg2,position:"left",curTime: $rootScope.getDatetime()});
             $rootScope.showMsgLoader=false;
             //$.jStorage.set("chatlist",$rootScope.chatlist);
             $timeout(function(){
@@ -68317,6 +69438,28 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             $rootScope.showMsgLoader=true;
             $rootScope.scrollChatWindow();
         };
+        $rootScope.pushAutoMsg = function(id,value,answer) {
+            $rootScope.msgSelected = true;
+            $rootScope.chatmsgid = id;
+            $rootScope.chatmsg = value;
+            $rootScope.answers = answer;
+            console.log(answer);
+            
+            $rootScope.autocompletelist = [];
+            $rootScope.chatlist.push({id:id,msg:value,position:"right",curTime: $rootScope.getDatetime()});
+            //console.log("msgid="+id+"chatmsg="+$rootScope.msgSelected);
+            var automsg = { Text: answer , type : "SYS_AUTO"};
+            $rootScope.chatlist.push({id:id,msg:automsg,position:"left",curTime: $rootScope.getDatetime()});
+            $rootScope.showMsgLoader = false;
+            //$.jStorage.set("chatlist",$rootScope.chatlist);
+            $rootScope.msgSelected = false;
+            $rootScope.chatmsgid = "";
+            $rootScope.chatmsg = "";
+            $rootScope.answers = "";
+            $rootScope.chatText="";
+            $(".chatinput").val("");
+            $rootScope.scrollChatWindow();
+        };
         $rootScope.pushQuestionMsg = function(id,value) {
             $rootScope.msgSelected = true;
             $rootScope.chatmsgid = id;
@@ -68333,56 +69476,212 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         else
             $rootScope.minimizeChatwindow();
 
-        $rootScope.ratecardSubmit = function(coldata,rowdata) {
-            console.log(coldata,rowdata);
+        $rootScope.claim_noSubmit  = function(claimno,haveclaim) {
+            console.log(haveclaim);
+            var is_exist = "N";
+            if(haveclaim == 1)
+                is_exist = "Y";
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),claim_no:claimno,is_exist:is_exist};
+            apiService.claimsubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                    if(value.type=="grievance form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false; 
+                    }
+                });
+            });
+        };
+        $rootScope.gr_noSubmit  = function(grno,havegr) {
+            var is_exist = "N";
+            if(havegr == 1)
+                is_exist = "Y";
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),grno:grno,is_exist:is_exist};
+            apiService.grsubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                });
+            });
+        };
+        $rootScope.policy_noSubmit = function(policyno,havepolicy) {
+            console.log(havepolicy);
+            var is_exist = "N";
+            if(havepolicy == 1)
+                is_exist = "Y";
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),policy_no:policyno,is_exist:is_exist};
+            apiService.policysubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="mobile form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                });
+            });
+        };
+        $rootScope.dob_Submit = function(dob) {
+
+            var dt = new Date(dob);
+            var date = dt.getDate();
+            var month = dt.getMonth();
+            var year = dt.getFullYear();
+            month= month+1;
+            if (month.toString().length == 1) {
+                month = "0" + month
+            }
+            if (date.toString().length == 1) {
+                date = "0" + date
+            }
+            dob= date.toString() + "-" + month.toString() + "-" +year.toString();
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),dob:dob};
+            apiService.dobsubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="claim form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                    if(value.type=="dob form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        return false;
+                    }
+                });
+            });
+        };
+        $rootScope.mobile_noSubmit = function(mobileno) {
+            
+            var formData = {user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id"),mob_no:mobileno};
+            apiService.mobilenosubmit(formData).then(function (data){
+                angular.forEach(data.data.tiledlist, function(value, key) {
+                    if(value.type=="claim form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                    if(value.type=="dob form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false;
+                    }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        return false;
+                    }
+                    if(value.type=="grievance form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false; 
+                        }
+                });
+            });
         };
         $rootScope.getDthlinkRes = function(colno,lineno,dthlink) {
-            console.log(colno,lineno,dthlink);
-            mysession = $.jStorage.get("sessiondata");
-            console.log(mysession);
+            //console.log(colno,lineno,dthlink);
+            //mysession = $.jStorage.get("sessiondata");
+            var mysession = {};
+            //console.log(mysession);
             mysession.DTHlink=dthlink;
             mysession.DTHline=lineno;
             mysession.DTHcol=colno;
             formData = mysession;
-            console.log(formData);
+            formData.csrfmiddlewaretoken=$rootScope.getCookie("csrftoken");
+            formData.user_id=$cookies.get("session_id");
+            //console.log(formData);
             apiService.getDthlinkRes(formData).then(function (data){
-                angular.forEach(data.data.data.tiledlist, function(value, key) {
+                angular.forEach(data.data.tiledlist, function(value, key) {
                     if(value.type=="DTHyperlink")
                     {
-                        $rootScope.DthResponse(0,data.data.data);
+                        $rootScope.DthResponse(0,data.data);
                         
-                        $("#topic").text(data.data.data.tiledlist[0].topic);
-                        $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                        // $("#topic").text(data.data.data.tiledlist[0].topic);
+                        // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
                     }
+                    if(value.type=="text")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+						$rootScope.showMsgLoader = false;
+                        return false;
+                        // $("#topic").text(data.data.data.tiledlist[0].topic);
+                        // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
+                    }
+                    
                 });
             });
         };
         $rootScope.DthResponse = function(id,data) {
             $rootScope.pushSystemMsg(id,data);
             $rootScope.showMsgLoader = false; 
-            $rootScope.selectTabIndex = 0;
+            // $rootScope.selectTabIndex = 0;
             
-            //var node_data = {"node_data": {"elements": ["Guidelines", "Shifting", "Accessibility", "Charges"], "element_values": ["<br>To define general guidelines to be followed by Branches while processing Account Closure. <br><br> Branch should attempt for retention of account before closing the account as opening a new account is expensive. <br><br> Channels through which Account Closure request is received: <br> 1. Customers In Person (CIP) who walk in to the Branch <br>\n2. Representatives/Bearer of customers who walk in to the Branch <br>\n3. Mail / Drop Box <br><br> Check Documentation and Signature Protocol <br><br> Check Mode of Payment for closure Proceeds <br><br> Check for Customer Handling on receipt of request <br><br> Check Process at Branch \u2013Checks during acceptance of closure form <br><br> Check Process at Branch- Post acceptance of Closure form <br><br> ", "<br>Customer is unwilling to give us another chance  <br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance. <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>In case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\nCustomer will pay the  necessary amount to regularize the account <br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly. <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel <br><br>\n4) Branch to journal of the attempts made to retain the customer. <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.", "<br>If customer is closing his/ her account due to inconvenient accessibility, solutions like Home Banking, Beat Pick up facility, etc. should be re-iterated. <br>\nIn case customer has an account which he/ she is not eligible for an accessibility offering he/ she is interested in, an upgraded account should be offered especially if account balances justify it (ensure that new AMB/AQBs and NMCs are communicated clearly).Customer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d.  <br><br> This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer is unwilling to give another chance: < <br><br>> Customer will pay the  necessary amount to regularize the account  <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br> \n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.C2", "<br>1) Customer expresses concerns on high charges, ascertain the nature of charges levied and recommend an upgraded account where required (e.g. if customer finds DD charges high, up-sell to an account with a higher free DD limit or an account offering At Par cheque facility if usage is on our locations). Communicate the AMB/AQB and NMC to customer clearly. <br><br>\n2) The account can be upgraded/downgrade as per customer requirement by retaining the same account Number  <br><br>\n3) Branch can also explain the benefits of Basic/Small Account and offer conversion to the said  account as it will address their inability to maintain the account.  <br><br>\nCustomer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront.  <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.   <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer will pay the  necessary amount to regularize the account   <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br>\n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\n"]}};
-            var ele = new Array("Process");
-            ele2 = [  
-                        "Guidelines",
-                        "Shifting",
-                        "Accessibility",
-                        "Charges"
-                    ];
-            ele=ele.concat(ele2);
-            var ele_val = new Array(data.tiledlist[0]);
-            element_values = [  
-                        "<br>To define general guidelines to be followed by Branches while processing Account Closure. <br><br> Branch should attempt for retention of account before closing the account as opening a new account is expensive. <br><br> Channels through which Account Closure request is received: <br> 1. Customers In Person (CIP) who walk in to the Branch <br>\n2. Representatives/Bearer of customers who walk in to the Branch <br>\n3. Mail / Drop Box <br><br> Check Documentation and Signature Protocol <br><br> Check Mode of Payment for closure Proceeds <br><br> Check for Customer Handling on receipt of request <br><br> Check Process at Branch \u2013Checks during acceptance of closure form <br><br> Check Process at Branch- Post acceptance of Closure form <br><br> ",
-                        "<br>Customer is unwilling to give us another chance  <br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance. <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>In case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\nCustomer will pay the  necessary amount to regularize the account <br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly. <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel <br><br>\n4) Branch to journal of the attempts made to retain the customer. <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.",
-                        "<br>If customer is closing his/ her account due to inconvenient accessibility, solutions like Home Banking, Beat Pick up facility, etc. should be re-iterated. <br>\nIn case customer has an account which he/ she is not eligible for an accessibility offering he/ she is interested in, an upgraded account should be offered especially if account balances justify it (ensure that new AMB/AQBs and NMCs are communicated clearly).Customer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d.  <br><br> This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer is unwilling to give another chance: < <br><br>> Customer will pay the  necessary amount to regularize the account  <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br> \n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.C2",
-                        "<br>1) Customer expresses concerns on high charges, ascertain the nature of charges levied and recommend an upgraded account where required (e.g. if customer finds DD charges high, up-sell to an account with a higher free DD limit or an account offering At Par cheque facility if usage is on our locations). Communicate the AMB/AQB and NMC to customer clearly. <br><br>\n2) The account can be upgraded/downgrade as per customer requirement by retaining the same account Number  <br><br>\n3) Branch can also explain the benefits of Basic/Small Account and offer conversion to the said  account as it will address their inability to maintain the account.  <br><br>\nCustomer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront.  <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.   <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer will pay the  necessary amount to regularize the account   <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br>\n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\n"
-                    ]
-            ele_val = ele_val.concat(element_values);
-            //_.insert(ele, "Process", [0]);
-            $rootScope.tabvalue.elements = ele;
-            $rootScope.tabvalue.element_values=ele_val;
-            //$rootScope.$emit("setTabData", $scope.node_data);
+            // //var node_data = {"node_data": {"elements": ["Guidelines", "Shifting", "Accessibility", "Charges"], "element_values": ["<br>To define general guidelines to be followed by Branches while processing Account Closure. <br><br> Branch should attempt for retention of account before closing the account as opening a new account is expensive. <br><br> Channels through which Account Closure request is received: <br> 1. Customers In Person (CIP) who walk in to the Branch <br>\n2. Representatives/Bearer of customers who walk in to the Branch <br>\n3. Mail / Drop Box <br><br> Check Documentation and Signature Protocol <br><br> Check Mode of Payment for closure Proceeds <br><br> Check for Customer Handling on receipt of request <br><br> Check Process at Branch \u2013Checks during acceptance of closure form <br><br> Check Process at Branch- Post acceptance of Closure form <br><br> ", "<br>Customer is unwilling to give us another chance  <br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance. <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>In case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\nCustomer will pay the  necessary amount to regularize the account <br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly. <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel <br><br>\n4) Branch to journal of the attempts made to retain the customer. <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.", "<br>If customer is closing his/ her account due to inconvenient accessibility, solutions like Home Banking, Beat Pick up facility, etc. should be re-iterated. <br>\nIn case customer has an account which he/ she is not eligible for an accessibility offering he/ she is interested in, an upgraded account should be offered especially if account balances justify it (ensure that new AMB/AQBs and NMCs are communicated clearly).Customer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d.  <br><br> This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer is unwilling to give another chance: < <br><br>> Customer will pay the  necessary amount to regularize the account  <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br> \n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.C2", "<br>1) Customer expresses concerns on high charges, ascertain the nature of charges levied and recommend an upgraded account where required (e.g. if customer finds DD charges high, up-sell to an account with a higher free DD limit or an account offering At Par cheque facility if usage is on our locations). Communicate the AMB/AQB and NMC to customer clearly. <br><br>\n2) The account can be upgraded/downgrade as per customer requirement by retaining the same account Number  <br><br>\n3) Branch can also explain the benefits of Basic/Small Account and offer conversion to the said  account as it will address their inability to maintain the account.  <br><br>\nCustomer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront.  <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.   <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer will pay the  necessary amount to regularize the account   <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br>\n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\n"]}};
+            // var ele = new Array("Process");
+            // ele2 = [  
+            //             "Guidelines",
+            //             "Shifting",
+            //             "Accessibility",
+            //             "Charges"
+            //         ];
+            // ele=ele.concat(ele2);
+            // var ele_val = new Array(data.tiledlist[0]);
+            // element_values = [  
+            //             "<br>To define general guidelines to be followed by Branches while processing Account Closure. <br><br> Branch should attempt for retention of account before closing the account as opening a new account is expensive. <br><br> Channels through which Account Closure request is received: <br> 1. Customers In Person (CIP) who walk in to the Branch <br>\n2. Representatives/Bearer of customers who walk in to the Branch <br>\n3. Mail / Drop Box <br><br> Check Documentation and Signature Protocol <br><br> Check Mode of Payment for closure Proceeds <br><br> Check for Customer Handling on receipt of request <br><br> Check Process at Branch \u2013Checks during acceptance of closure form <br><br> Check Process at Branch- Post acceptance of Closure form <br><br> ",
+            //             "<br>Customer is unwilling to give us another chance  <br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance. <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>In case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\nCustomer will pay the  necessary amount to regularize the account <br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly. <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel <br><br>\n4) Branch to journal of the attempts made to retain the customer. <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.",
+            //             "<br>If customer is closing his/ her account due to inconvenient accessibility, solutions like Home Banking, Beat Pick up facility, etc. should be re-iterated. <br>\nIn case customer has an account which he/ she is not eligible for an accessibility offering he/ she is interested in, an upgraded account should be offered especially if account balances justify it (ensure that new AMB/AQBs and NMCs are communicated clearly).Customer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront. <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.  <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d.  <br><br> This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer is unwilling to give another chance: < <br><br>> Customer will pay the  necessary amount to regularize the account  <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br> \n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.C2",
+            //             "<br>1) Customer expresses concerns on high charges, ascertain the nature of charges levied and recommend an upgraded account where required (e.g. if customer finds DD charges high, up-sell to an account with a higher free DD limit or an account offering At Par cheque facility if usage is on our locations). Communicate the AMB/AQB and NMC to customer clearly. <br><br>\n2) The account can be upgraded/downgrade as per customer requirement by retaining the same account Number  <br><br>\n3) Branch can also explain the benefits of Basic/Small Account and offer conversion to the said  account as it will address their inability to maintain the account.  <br><br>\nCustomer is unwilling to give us another chance  <br><br>\n1) In case of Issues expressed by the customer where he / she is willing to give the Bank another chance.  <br><br>\n2) Branch to attempt fix the problem within 48 hours or 7 days on the outside for extreme cases and revert to the customer. This TAT for revert to be communicated to the customer upfront.  <br><br>\n3) Customers to be sent a personalised letter thanking them for their time and an acknowledgement, that we value their business and have remedied whatever caused them to want to leave in the first place. A list of all reasons for closure with the action taken, to be stated.   <br><br>\n4) Once the customer has been retained, the customer letter / form duly marked \u201cNOT FOR CLOSURE \u2013 RETAINED\u201d, along with a copy of the resolution letter to be sent to CPC for filing in the customer record.  <br><br>\n5) Siebel to be updated with the same comment and closed.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.  <br><br>\nCustomer will pay the  necessary amount to regularize the account   <br><br>\nCustomer is unwilling to regularize the account after all attempts then branch user to follow the protocol as detailed in chapter \u201cAccount closure requests with debit balance/TBMS lien.\u201d  <br><br>\n1) Where the customer is not willing to continue, Branch to ensure that the complete details on Account closure form and all the checks to be made as detailed in the chapter  \u201cGeneral Guidelines to be followed for Account closure\u201d  <br><br>\n2) In case of any incomplete request, the customer needs to be apprised of the requirements and Siebel to be updated accordingly.  <br><br>\n3) If the a/c closure request is complete in all respects / once the complete request is received from the customer, the same needs to be sent to CPC, post updating the Siebel  <br><br>\n4) Branch to journal of the attempts made to retain the customer.  <br><br>\nIn case the BOM/SM/BM/ RBM / AM or the branch staff are able / Not able  to retain the customer, then protthe SR which has been created needs to be closed with the Closure Description in Siebel as, \u201cCustomer Retained\u201d. This needs to be done diligently and would be subject to audits.\n"
+            //         ]
+            // ele_val = ele_val.concat(element_values);
+            // //_.insert(ele, "Process", [0]);
+            // $rootScope.tabvalue.elements = ele;
+            // $rootScope.tabvalue.element_values=ele_val;
+            // //$rootScope.$emit("setTabData", $scope.node_data);
            
             
         };
@@ -68416,6 +69715,25 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $timeout(function(){
                     $(".chatinput").val("");
                 });
+                console.log($rootScope.newsid);
+                // if($rootScope.newslist)
+                // {
+                //     if($rootScope.newslist.body.length > 0) 
+                //     {
+
+                //     }
+                //     else
+                //     {
+                //         var formData = {newsid:$rootScope.newsid};
+                //         apiService.getmorenews({}).then(function (data){    
+                //             $rootScope.newslist = data.data.data;
+                //             $rootScope.newsid = data.data.id;
+                //             $.jStorage.set("newslist",$rootScope.newslist);
+                //             $.jStorage.set("newsid",$rootScope.newsid);
+                            
+                //         });
+                //     }
+                // }
                 apiService.getCategoryFAQ($scope.formData).then(function (data){
 						
                     angular.forEach(data.data.tiledlist, function(value, key) {
@@ -68423,10 +69741,45 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         {
                         	$rootScope.pushSystemMsg(0,data.data);
                             $rootScope.showMsgLoader = false;
+                            return false;
+                        }
+                        if(value.type=="form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
                             
                             
                             return false;
                         }
+                        if(value.type=="mobile form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false;
+                        }
+                        if(value.type=="claim form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false;
+                        }
+                        if(value.type=="DTHyperlink")
+                        {
+                           $rootScope.DthResponse(0,data.data);  
+                        }
+                        if(value.type=="grievance form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false; 
+                        }
+
                         // if(value.type=="rate card")
                         // {
                         //     $rootScope.pushSystemMsg(0,data.data.data);
@@ -68435,23 +69788,11 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             
                         //     return false;
                         // }
-                        // else if(value.type=="DTHyperlink")
-                        // {
-                        //    $rootScope.DthResponse(0,data.data.data);  
-                        // }
                         // else if(value.type=="Instruction")
                         // {
 						// 	$rootScope.InstructionResponse(0,data.data.data);  
                         // }
-                        if(value.type=="FAQ")
-                        {
-                            // var reversefaq = new Array();
-                            // //console.log(data.data.tiledlist[0].FAQ);
-                            // reversefaq = _.reverse(data.data.tiledlist[0].FAQ);
-                            // data.data.tiledlist[0].FAQ = reversefaq;
-                            //console.log(reversefaq);
-                            $rootScope.FAQResponse(0,data.data);  
-                        }
+                        
                     });
                     
 
@@ -68472,7 +69813,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
 
         $rootScope.onKeyUp = function(e){
             //if(e.key == "ArrowDown" || e.key == "ArrowUp")
-            if(e.which == 40 )
+            if(e.which == 40 ) // Down arrow
             {
                 if($("ul#ui-id-1 li.active").length!=0) {
                     var storeTarget	= $('ul#ui-id-1').find("li.active").next();
@@ -68481,18 +69822,20 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     $(".chatinput").val(storeTarget.text());
                     $rootScope.autolistid = $(storeTarget).attr("data-id");
                     $rootScope.autolistvalue = $(storeTarget).attr("data-value");
+                    $rootScope.answers = $(storeTarget).attr("data-answers");
                 }
                 else
                 {
                     $('ul#ui-id-1').find("li:first").focus().addClass("active");
+                    var storeTarget	= $('ul#ui-id-1').find("li.active");
                     $(".chatinput").val($('ul#ui-id-1').find("li:first").text());
                     $rootScope.autolistid = $('ul#ui-id-1').find("li:first").attr("data-id");
                     $rootScope.autolistvalue = $('ul#ui-id-1').find("li:first").attr("data-value");
+                    $rootScope.answers = $(storeTarget).attr("data-answers");
 		    	}
-
                 return;
             }
-            if(e.which == 38 )
+            if(e.which == 38 ) // Up arrow
             {
                 if($("ul#ui-id-1 li.active").length!=0) {
                     var storeTarget	= $('ul#ui-id-1').find("li.active").prev();
@@ -68501,56 +69844,87 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     $(".chatinput").val(storeTarget.text());
                     $rootScope.autolistid = $(storeTarget).attr("data-id");
                     $rootScope.autolistvalue = $(storeTarget).attr("data-value");
+                    $rootScope.answers = $(storeTarget).attr("data-answers");
                 }
                 else
                 {
                     $('ul#ui-id-1').find("li:last").focus().addClass("active");
+                    var storeTarget	= $('ul#ui-id-1').find("li.active");
                     $(".chatinput").val($('ul#ui-id-1').find("li:last").text());
                     $rootScope.autolistid = $('ul#ui-id-1').find("li:last").attr("data-id");
                     $rootScope.autolistvalue = $('ul#ui-id-1').find("li:last").attr("data-value");
+                    $rootScope.answers = $(storeTarget).attr("data-answers");
 		    	}
 
                 return;
             }
-            if(e.which == 13)
+            if(e.which == 13) // Enter
             {
-                // if($rootScope.autolistid=="" || $rootScope.autolistid == null || $rootScope.autolistid == 0)
-                // {
-                //     $(".chatinput").val("");
-                //     $rootScope.pushMsg("",$rootScope.chatText);
-                // }
-                // else {
-                //     $rootScope.pushMsg($rootScope.autolistid,$rootScope.chatText);
-                // }
-                
-                $rootScope.pushMsg("",$(".chatinput").val());
+                if( $rootScope.answers )
+                {
+                    $rootScope.pushAutoMsg($rootScope.autolistid,$rootScope.chatText,$rootScope.answers);
+                    $rootScope.autocompletelist = [];
+                }
+                else if($rootScope.autolistid=="" || $rootScope.autolistid == null)
+                {
+                    if($(".chatinput").val() != "")
+                    {
+                        $(".chatinput").val("");
+                        $rootScope.pushMsg("",$rootScope.chatText);
+                        $rootScope.chatText="";
+                    }
+                }
+                else {
+                    $rootScope.pushMsg("",$rootScope.autolistvalue);
+                    
+                    //$rootScope.pushAutoMsg($rootScope.autolistid,$rootScope.chatText,$rootScope.answers);
+                }
+                $rootScope.autocompletelist = [];
+                //$rootScope.pushMsg("",$(".chatinput").val());
                 $(".chatinput").val("");
             }
+            if(e.which == 8)
+            {
+                
+                if($(".chatinput").val()=="")
+                {
+                    $rootScope.autocompletelist = [];
+                    $rootScope.chatText = "";
+                    $rootScope.autolistid=="";
+                    $rootScope.autolistvalue = "";
+                    $rootScope.answers = "";
+                }
+                
+            }
+            // $rootScope.chatText = "";
+            // $rootScope.autolistid=="";
+            // $rootScope.autolistvalue = "";
         };
         $rootScope.likeChatClick = function(){
             $timeout(function(){
-                $('span.thumbsup').css("color", "#ed232b");
-                $('.thumbsdown').css("color", "#444");
+                $('span.thumbsup').css("color", "#39E61F");
+                $('.thumbsdown').css("color", "#1166DD");
             },200);
         };
         $rootScope.$dislikemodalInstance = {};
         $rootScope.dislikesuggestionerror = 0;
         $rootScope.dislikeChatClick = function(){
-            /*$rootScope.$dislikemodalInstance = $uibModal.open({
+            $rootScope.$dislikemodalInstance = $uibModal.open({
                 scope: $rootScope,
                 animation: true,
                 size: 'sm',
                 templateUrl: 'views/modal/dislikechat.html',
                 //controller: 'CommonCtrl'
-            });*/
+            });
             $timeout(function(){ 
-                $('span.thumbsdown').css("color", "#ed232b");
-                $('.thumbsup').css("color", "#444");
+                $('span.thumbsdown').css("color", "#F32525");
+                $('.thumbsup').css("color", "#1166DD");
             },200);
         };
-        /*$rootScope.dislikeCancel = function() {
+        $rootScope.dislikeCancel = function() {
             //console.log("dismissing");
             $scope.$dislikemodalInstance.dismiss('cancel');
+            $('span.thumbsdown').css("color", "#1166DD");
         };
         $rootScope.dislikesuggestionsubmit = function(suggestion){
             console.log("suggestion",suggestion);
@@ -68559,12 +69933,38 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $rootScope.dislikesuggestionSuccess = 0;
                 $rootScope.dislikeCancel();
             },500);
-        };*/
-        
+            $('span.thumbsdown').css("color", "#ED6D05");
+        };
+        $scope.luhnCheck = function(val) {
+            var sum = 0;
+            for (var i = 0; i < val.length; i++) {
+                var intVal = parseInt(val.substr(i, 1));
+                if (i % 2 == 0) {
+                    intVal *= 2;
+                    if (intVal > 9) {
+                        intVal = 1 + (intVal % 10);
+                    }
+                }
+                sum += intVal;
+            }
+            return (sum % 10) == 0;
+        };
+        //ng-change="getAutocomplete(chatText);"
+        $rootScope.validatePolicyNumber = function (number) {
+            var regex = new RegExp("^[0-9]{16}$");
+            
+            if (!regex.test(number))
+            {
+                console.log(number);
+                return false;
+            }
+            $scope.luhnCheck(number);
+        }
        $timeout(function(){
             //$('#chatTabs a:last').tab('show');
        },200);
     })
+    
     .controller('FormCtrl', function ($scope, TemplateService, NavigationService, $timeout, toastr, $http) {
         $scope.template = TemplateService.getHTML("content/form.html");
         TemplateService.title = "Form"; //This is the Title of the Website
@@ -68584,6 +69984,21 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 }, 5000);
             });
         };
+    })
+    .controller('ViewCtrl', function ($scope, $uibModalInstance, items) {
+
+        $scope.items = items;
+        // $scope.selected = {
+        //     item: $scope.items[0]
+        // };
+        var dt = "";
+        _.each($scope.items,function(v,k){
+            console.log(v);
+            dt += "<option value='"+v._id+"'>"+v.name+"</option>";
+            
+        });
+        console.log(dt);
+        //$("select#selectbookmark_list").html(dt);
     })
     .controller('GridCtrl', function ($scope, TemplateService, NavigationService, $timeout, toastr, $http) {
         $scope.template = TemplateService.getHTML("content/grid.html");
