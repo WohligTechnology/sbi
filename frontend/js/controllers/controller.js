@@ -938,6 +938,10 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         {
                            $rootScope.DthResponse(0,data.data);  
                         }
+                        if(value.type=="grievance form type")
+                        {
+                           $rootScope.DthResponse(0,data.data);  
+                        }
 
                         // if(value.type=="rate card")
                         // {
