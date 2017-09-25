@@ -364,6 +364,17 @@ height:30px!important;
     height: 100px;
     width: 100px;
 }
+.toolbaroption {
+    float: left;
+}
+.toolbaroption button {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.toolbaroption .dropdown-menu {
+    right: 0!important;
+    left: inherit!important;
+}
 .text-box span {
     font-size:10px;
 }

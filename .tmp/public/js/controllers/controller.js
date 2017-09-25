@@ -131,7 +131,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.$viewmodalInstance = {};
         $rootScope.loginautherror = 0;
         $rootScope.loginSuccess = 0;
-        $rootScope.newslist = [];
+        $rootScope.newslist = {};
         $rootScope.newsid="";
 
         if($.jStorage.get("newslist"))
@@ -187,6 +187,35 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             //console.log(key,"key");
             //console.log(value,"value");
             $rootScope.showcreate = true;
+        };
+        $rootScope.$viewmodalInstance1 = {};
+        $rootScope.selectbookmarkerror = 0;
+        $rootScope.openviewBookmark = function() {
+            $scope.formData = {userid:$.jStorage.get("sessionid")};
+            
+            
+            apiService.viewbookmark($scope.formData).then(function (callback){
+                $("#selectbookmark_list").html("");
+                
+                
+                $rootScope.$viewmodalInstance1 = $uibModal.open({
+                    scope: $rootScope,
+                    animation: true,
+                    size: 'sm',
+                    templateUrl: 'views/modal/selectbookmark.html',
+                    resolve: {
+                        items: function () {
+                        return callback.data.data;
+                        }
+                    },
+                    controller: 'ViewCtrl'
+                });
+                
+            });
+        };
+        $rootScope.selectbookmarkCancel = function() {
+            //console.log("dismissing");
+            $rootScope.$viewmodalInstance1.dismiss('cancel');
         };
         $rootScope.getpolicy = function(skey,sval) {
             if($scope.viewPage < 1)
@@ -333,6 +362,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             $.jStorage.set("name", name);
                             $.jStorage.set("email", email);
                             $.jStorage.set("isLoggedin", true);
+                            $.jStorage.set("sessionid",value.profile_id);
                             $rootScope.isLoggedin = true;
                             // $("#topic").text(data.data.data.tiledlist[0].topic);
                             // $.jStorage.set("sessiondata",data.data.data.session_obj_data);
@@ -368,6 +398,8 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             $rootScope.isLoggedin = true;
                             $rootScope.isemp = false;
                             $.jStorage.set("isemp",false);
+                            $.jStorage.set("sessionid",value.profile_id);
+                            //console.log(value.profile_id);
                         }
                     });
                     
@@ -676,6 +708,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         
                         return false;
                     }
+                    if(value.type=="grievance form type")
+                    {
+                        $rootScope.pushSystemMsg(0,data.data);
+                        $rootScope.showMsgLoader = false;
+                        
+                        
+                        return false; 
+                    }
                 });
             });
         };
@@ -787,6 +827,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         $rootScope.showMsgLoader = false;
                         return false;
                     }
+                    if(value.type=="grievance form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false; 
+                        }
                 });
             });
         };
@@ -883,21 +931,24 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     $(".chatinput").val("");
                 });
                 console.log($rootScope.newsid);
-                if($rootScope.newslist.body.length > 0) 
-                {
+                // if($rootScope.newslist)
+                // {
+                //     if($rootScope.newslist.body.length > 0) 
+                //     {
 
-                }
-                else
-                {
-                    var formData = {newsid:$rootScope.newsid};
-                    apiService.getmorenews({}).then(function (data){    
-                        $rootScope.newslist = data.data.data;
-                        $rootScope.newsid = data.data.id;
-                        $.jStorage.set("newslist",$rootScope.newslist);
-                        $.jStorage.set("newsid",$rootScope.newsid);
-                        
-                    });
-                }
+                //     }
+                //     else
+                //     {
+                //         var formData = {newsid:$rootScope.newsid};
+                //         apiService.getmorenews({}).then(function (data){    
+                //             $rootScope.newslist = data.data.data;
+                //             $rootScope.newsid = data.data.id;
+                //             $.jStorage.set("newslist",$rootScope.newslist);
+                //             $.jStorage.set("newsid",$rootScope.newsid);
+                            
+                //         });
+                //     }
+                // }
                 apiService.getCategoryFAQ($scope.formData).then(function (data){
 						
                     angular.forEach(data.data.tiledlist, function(value, key) {
@@ -934,6 +985,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         if(value.type=="DTHyperlink")
                         {
                            $rootScope.DthResponse(0,data.data);  
+                        }
+                        if(value.type=="grievance form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false; 
                         }
 
                         // if(value.type=="rate card")
@@ -1140,6 +1199,21 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 }, 5000);
             });
         };
+    })
+    .controller('ViewCtrl', function ($scope, $uibModalInstance, items) {
+
+        $scope.items = items;
+        // $scope.selected = {
+        //     item: $scope.items[0]
+        // };
+        var dt = "";
+        _.each($scope.items,function(v,k){
+            console.log(v);
+            dt += "<option value='"+v._id+"'>"+v.name+"</option>";
+            
+        });
+        console.log(dt);
+        //$("select#selectbookmark_list").html(dt);
     })
     .controller('GridCtrl', function ($scope, TemplateService, NavigationService, $timeout, toastr, $http) {
         $scope.template = TemplateService.getHTML("content/grid.html");
