@@ -883,24 +883,24 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     $(".chatinput").val("");
                 });
                 console.log($rootScope.newsid);
-                if($rootScope.newslist)
-                {
-                    if($rootScope.newslist.body.length > 0) 
-                    {
+                // if($rootScope.newslist)
+                // {
+                //     if($rootScope.newslist.body.length > 0) 
+                //     {
 
-                    }
-                    else
-                    {
-                        var formData = {newsid:$rootScope.newsid};
-                        apiService.getmorenews({}).then(function (data){    
-                            $rootScope.newslist = data.data.data;
-                            $rootScope.newsid = data.data.id;
-                            $.jStorage.set("newslist",$rootScope.newslist);
-                            $.jStorage.set("newsid",$rootScope.newsid);
+                //     }
+                //     else
+                //     {
+                //         var formData = {newsid:$rootScope.newsid};
+                //         apiService.getmorenews({}).then(function (data){    
+                //             $rootScope.newslist = data.data.data;
+                //             $rootScope.newsid = data.data.id;
+                //             $.jStorage.set("newslist",$rootScope.newslist);
+                //             $.jStorage.set("newsid",$rootScope.newsid);
                             
-                        });
-                    }
-                }
+                //         });
+                //     }
+                // }
                 apiService.getCategoryFAQ($scope.formData).then(function (data){
 						
                     angular.forEach(data.data.tiledlist, function(value, key) {
