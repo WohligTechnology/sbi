@@ -26,7 +26,7 @@ module.exports = {
    ***************************************************************************/
 
   port: 443,
-  realHost: "http://cingulariti.com",
+  realHost: "https://cingulariti.com",
   emails: ["chintan@wohlig.com", "jagruti@wohlig.com", "tushar@wohlig.com", "chirag@wohlig.com", "harsh@wohlig.com"]
 
   /***************************************************************************
