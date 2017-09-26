@@ -16,6 +16,8 @@ var schema = new Schema({
         topic : String,
 		sessionId : Number,
 		type : String,
+		Text:String,
+		//type: mongoose.Schema.Types.Object
     }
 });
 
@@ -31,23 +33,23 @@ schema.plugin(uniqueValidator);
 schema.plugin(timestamps);
 module.exports = mongoose.model('Chathistory', schema,'chathistory');
 
-var exports = _.cloneDeep(require("sails-wohlig-service")(schema,'chathistory'));
+var exports = _.cloneDeep(require("sails-wohlig-service")(schema));
 var model = {
     viewbookmark: function (data, callback) {
         console.log("data", data);
         var userid = data.userid;
-        Chathistory.aggregate([
-			//user_id: userid
-        {$group: { _id: "$sessionId", count:{$sum:1} } },
-        { $match: { user_id: userid } }
-		]).exec(function (err, found) {
+        Chathistory.find({
+			user_id: userid
+        /*{$group: { _id: "$sessionId", count:{$sum:1} } },
+        { $match: { user_id: userid } }*/
+		}).exec(function (err, found) {
             if (err) {
                 callback(err, null);
             } 
             else {
                 if (found) {
-					//var results = _.groupBy(found, "sportsListCategory.name");
-                    callback(null, found);
+					var results = _.groupBy(found, "sessionId");
+                    callback(null, results);
                 } else {
                     callback({
                         message: "-1"
