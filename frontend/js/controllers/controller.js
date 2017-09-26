@@ -588,24 +588,27 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.chatText = "";
         $rootScope.answers = "";
         $rootScope.getAutocomplete = function(chatText) {
-            $rootScope.showTimeoutmsg = false;
-            // if($rootScope.showTimeoutmsg == false && chatText=="") 
-            // {
-            //     $timeout(function () {
-            //         $rootScope.showTimeoutmsg = true;
-            //         msg = {Text:"Any Confusion ? How May I help You ?",type:"SYS_INACTIVE"};
-            //         $rootScope.pushSystemMsg(0,msg);
-            //     },60000);
-            // }
-            $rootScope.chatText = chatText;
-            if(chatText == "" || chatText == " " || chatText == null)
-                $rootScope.autocompletelist = [];
-            else {
-                $rootScope.chatdata = { string:$rootScope.chatText};
-                apiService.getautocomplete($rootScope.chatdata).then(function (response){
-                       // console.log(response.data);
-                    $rootScope.autocompletelist = response.data.data;
-                });
+            if( $rootScope.answers == "")
+            {
+                $rootScope.showTimeoutmsg = false;
+                // if($rootScope.showTimeoutmsg == false && chatText=="") 
+                // {
+                //     $timeout(function () {
+                //         $rootScope.showTimeoutmsg = true;
+                //         msg = {Text:"Any Confusion ? How May I help You ?",type:"SYS_INACTIVE"};
+                //         $rootScope.pushSystemMsg(0,msg);
+                //     },60000);
+                // }
+                $rootScope.chatText = chatText;
+                if($(".chatinput").val() == "" || $(".chatinput").val() == null)
+                    $rootScope.autocompletelist = [];
+                else {
+                    $rootScope.chatdata = { string:$rootScope.chatText};
+                    apiService.getautocomplete($rootScope.chatdata).then(function (response){
+                        // console.log(response.data);
+                        $rootScope.autocompletelist = response.data.data;
+                    });
+                }
             }
             //var languageid = $.jStorage.get("language");
             //$scope.formData = {"text": chatText,"language":languageid };
@@ -782,6 +785,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             $rootScope.answers = "";
             $rootScope.chatText="";
             $(".chatinput").val("");
+            $timeout(function(){
+                $rootScope.autocompletelist = [];
+            },1000);
             $rootScope.scrollChatWindow();
         };
         $rootScope.pushQuestionMsg = function(id,value) {
