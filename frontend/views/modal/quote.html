@@ -39,9 +39,9 @@
             </div>
             <div class="form-group">
                 <label for="iname">Primary Insured's Name</label>
-                <input type="date" class="form-control" name="iname" id="iname" ng-model="u.iname" required >
+                <input type="text" class="form-control" name="iname" id="iname" ng-model="u.iname" required >
                 <div class="pull-right" ng-repeat="(field,value) in quote_form.iname.$error"  ng-show="quote_form.iname.$touched">
-                    <span class="label label-danger" ng-if="value">Please Select Name</span>
+                    <span class="label label-danger" ng-if="value">Please Enter Name</span>
                 </div>
             </div>
             <div class="form-group">

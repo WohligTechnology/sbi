@@ -187,7 +187,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             console.log(obj);
             $rootScope.selectquoteSuccess=1;
             $timeout(function(){
-                $rootScope.selectappointmentCancel();
+                $rootScope.selectquoteCancel();
             },2000);
             
             
