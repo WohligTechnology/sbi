@@ -133,28 +133,121 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.loginSuccess = 0;
         $rootScope.newslist = {};
         $rootScope.newsid="";
+        $rootScope.cur_b = "";
+        $rootScope.cur_h = "";
+        $rootScope.cur_i = "";
+        $rootScope.newslist = $.jStorage.get("newslist");
+        $rootScope.newsid = $.jStorage.get("newsid");
+        $rootScope.$viewmodalInstance2 = {};
+        $rootScope.selectmobileSuccess = 0;
+        //$rootScope.selectbookmarkerror = 0;
+        $rootScope.openappointment = function() {
+            $rootScope.$viewmodalInstance2 = $uibModal.open({
+                scope: $rootScope,
+                animation: true,
+                size: 'sm',
+                templateUrl: 'views/modal/appointment.html',
+                // resolve: {
+                //     items: function () {
+                //     return callback.data.data;
+                //     }
+                // },
+                //controller: 'ViewCtrl'
+            });
+               
+        };
+        $rootScope.selectappointmentCancel = function() {
+            //console.log("dismissing");
+            $rootScope.$viewmodalInstance2.dismiss('cancel');
+        };
 
-        if($.jStorage.get("newslist"))
-        {
-            $rootScope.newslist = $.jStorage.get("newslist");
-            $rootScope.newsid = $.jStorage.get("newsid");
-        
-            if($rootScope.newslist.body.length > 0) 
+        $rootScope.$viewmodalInstance3 = {};
+        $rootScope.selectquoteSuccess = 0;
+        //$rootScope.selectbookmarkerror = 0;
+        $rootScope.openquote = function() {
+            $rootScope.$viewmodalInstance3 = $uibModal.open({
+                scope: $rootScope,
+                animation: true,
+                size: 'lg',
+                templateUrl: 'views/modal/quote.html',
+                // resolve: {
+                //     items: function () {
+                //     return callback.data.data;
+                //     }
+                // },
+                //controller: 'ViewCtrl'
+            });
+               
+        };
+        $rootScope.selectquoteCancel = function() {
+            //console.log("dismissing");
+            $rootScope.$viewmodalInstance3.dismiss('cancel');
+        };
+        $rootScope.submitQuote = function(obj) {
+            console.log(obj);
+            $rootScope.selectquoteSuccess=1;
+            $timeout(function(){
+                $rootScope.selectappointmentCancel();
+            },2000);
+            
+            
+            //alert("Thank You");
+        };
+        angular.element(document).ready(function () {
+            console.log($.jStorage.get("newsid"),"news");
+            //$("#appointment").click(function(){
+            $(document).on('click', '#appointment', function(){ 
+                $rootScope.openappointment();
+            });
+            $(document).on('click', '#quote', function(){ 
+                $rootScope.openquote();
+            });
+            if($rootScope.newsid)
             {
-
+                
+                
+                //console.log($rootScope.newsid);
+                if($rootScope.newslist.body.length > 0) 
+                {
+                    console.log("inside news",$rootScope.newsid);
+                    console.log("inside news",$rootScope.newslist.body);
+                }
+                else
+                {
+                    console.log("getting news");   
+                    apiService.getnews({}).then(function (data){    
+                        $rootScope.newslist = data.data.data;
+                        $rootScope.newsid = data.data.data.id;
+                        console.log(data.data.id);
+                        $.jStorage.set("newslist",$rootScope.newslist);
+                        $.jStorage.set("newsid",$rootScope.newsid);
+                        
+                    });
+                }
             }
             else
             {
-                
-                apiService.getnews({}).then(function (data){    
-                    $rootScope.newslist = data.data.data;
-                    $rootScope.newsid = data.data.id;
+                console.log("getting news2");
+                apiService.getnews({}).then(function (response){    
+                    $rootScope.newslist = response.data.data;
+                    $rootScope.newsid = response.data.data.id;
+                    console.log(response.data.data.id,"news");
                     $.jStorage.set("newslist",$rootScope.newslist);
                     $.jStorage.set("newsid",$rootScope.newsid);
                     
                 });
             }
-        }
+        });
+        $rootScope.submitAppointment = function(mobileno) {
+            console.log(mobileno);
+            $rootScope.selectmobileSuccess=1;
+            $timeout(function(){
+                $rootScope.selectappointmentCancel();
+            },2000);
+            
+            
+            //alert("Thank You");
+        };
         $rootScope.loginpasswordCancel = function() {
             //console.log("dismissing");
             $rootScope.$viewmodalInstance.dismiss('cancel');
@@ -217,6 +310,10 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             //console.log("dismissing");
             $rootScope.$viewmodalInstance1.dismiss('cancel');
         };
+
+
+
+        
         $rootScope.getpolicy = function(skey,sval) {
             if($scope.viewPage < 1)
                 $scope.viewPage = 1;
@@ -369,8 +466,8 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         }
                         if(value.type=="employee form")
                         {
-                            $rootScope.chatlist = [];
-                            $rootScope.pushSystemMsg(0,callback.data);
+                            //$rootScope.chatlist = [];
+                            //$rootScope.pushSystemMsg(0,callback.data);
                             $rootScope.isemp = true;
                             $.jStorage.set("isemp",true);
                            
@@ -433,19 +530,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 }
             });
         };
-        $scope.logout = function()
-        {
-            $.jStorage.flush();
-            $rootScope.isemp = false;
-            $rootScope.isLoggedin = false;
-            $rootScope.chatlist = [];
-            $.jStorage.set("showchat",false);
-            $rootScope.chatOpen = false;
-            $rootScope.links = [];
-            $rootScope.firstMsg = true;
-            var msg = {Text:"Hi, How may I help you ?",type:"SYS_FIRST"};
-            $rootScope.pushSystemMsg(0,msg); 
-        };
+        
         $rootScope.autocompletelist = [];
         $rootScope.chatOpen = false;
         $rootScope.showTimeoutmsg = false;
@@ -524,12 +609,26 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.pushSystemMsg = function(id,value) {
             $rootScope.chatmsgid = id;
             $rootScope.chatmsg = value;
+            console.log(value);
             $rootScope.chatlist.push({id:"id",msg:value,position:"left",curTime: $rootScope.getDatetime()});
             //$.jStorage.set("chatlist",$rootScope.chatlist);
             $timeout(function(){
                 $rootScope.scrollChatWindow();
             });
             
+        };
+        $scope.logout = function()
+        {
+            $.jStorage.flush();
+            $rootScope.isemp = false;
+            $rootScope.isLoggedin = false;
+            $rootScope.chatlist = [];
+            $.jStorage.set("showchat",false);
+            $rootScope.chatOpen = false;
+            $rootScope.links = [];
+            //$rootScope.firstMsg = true;
+            var msg = {Text:"Hi, How may I help you ?",type:"SYS_FIRST"};
+            $rootScope.pushSystemMsg(0,msg); 
         };
         $scope.trustedHtml = function (plainText) {
             return $sce.trustAsHtml(plainText);
@@ -861,6 +960,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     }
                     if(value.type=="text")
                     {
+
                         $rootScope.pushSystemMsg(0,data.data);
 						$rootScope.showMsgLoader = false;
                         return false;
@@ -931,24 +1031,48 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     $(".chatinput").val("");
                 });
                 console.log($rootScope.newsid);
-                // if($rootScope.newslist)
-                // {
-                //     if($rootScope.newslist.body.length > 0) 
-                //     {
+                if($rootScope.newsid)
+                {
+                    if($rootScope.newslist.headline.length > 0) 
+                    {
+                        
+                        $rootScope.cur_b=$rootScope.newslist.body[0];
+                        $rootScope.cur_h=$rootScope.newslist.headline[0];
+                        $rootScope.cur_i=$rootScope.newslist.image[0];
 
-                //     }
-                //     else
-                //     {
-                //         var formData = {newsid:$rootScope.newsid};
-                //         apiService.getmorenews({}).then(function (data){    
-                //             $rootScope.newslist = data.data.data;
-                //             $rootScope.newsid = data.data.id;
-                //             $.jStorage.set("newslist",$rootScope.newslist);
-                //             $.jStorage.set("newsid",$rootScope.newsid);
+                        cur_b = $rootScope.cur_b;
+                        cur_h = $rootScope.cur_h;
+                        cur_i = $rootScope.cur_i;
+                        console.log(cur_b);
+                        $(".fancybox-caption").html(cur_b);
+                        // _.remove($rootScope.newslist.body, function(cur_b) {
+                              
+                        // });
+                        // _.remove($rootScope.newslist.headline, function(cur_h) {
+                              
+                        // });
+                        // _.remove($rootScope.newslist.image, function(cur_i) {
+                              
+                        // });
+                        $rootScope.newslist.body.shift();
+                        $rootScope.newslist.headline.shift();
+                        $rootScope.newslist.image.shift();
+                       
+                        $.jStorage.set("newslist",$rootScope.newslist);
+                        $rootScope.newslist = $.jStorage.get("newslist");
+                    }
+                    else
+                    {
+                        var formData = {newsid:$rootScope.newsid};
+                        apiService.getmorenews({}).then(function (data){    
+                            $rootScope.newslist = data.data.data;
+                            $rootScope.newsid = data.data.data.id;
+                            $.jStorage.set("newslist",$rootScope.newslist);
+                            $.jStorage.set("newsid",$rootScope.newsid);
                             
-                //         });
-                //     }
-                // }
+                        });
+                    }
+                }
                 apiService.getCategoryFAQ($scope.formData).then(function (data){
 						
                     angular.forEach(data.data.tiledlist, function(value, key) {
@@ -987,6 +1111,22 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                            $rootScope.DthResponse(0,data.data);  
                         }
                         if(value.type=="grievance form type")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false; 
+                        }
+                        if(value.type=="add employee form")
+                        {
+                            $rootScope.pushSystemMsg(0,data.data);
+                            $rootScope.showMsgLoader = false;
+                            
+                            
+                            return false; 
+                        }
+                        if(value.type=="view employee form")
                         {
                             $rootScope.pushSystemMsg(0,data.data);
                             $rootScope.showMsgLoader = false;
@@ -1084,13 +1224,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 {
                     if($(".chatinput").val() != "")
                     {
+                        $rootScope.pushMsg("",$(".chatinput").val());
                         $(".chatinput").val("");
-                        $rootScope.pushMsg("",$rootScope.chatText);
+                        
                         $rootScope.chatText="";
                     }
                 }
                 else {
-                    $rootScope.pushMsg("",$rootScope.autolistvalue);
+                    $rootScope.pushMsg("",$(".chatinput").val());
                     
                     //$rootScope.pushAutoMsg($rootScope.autolistid,$rootScope.chatText,$rootScope.answers);
                 }

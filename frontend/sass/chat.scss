@@ -8,7 +8,7 @@
 #chat_panel{
     display: none;
     font-family: 'Helvetica Neue','Roboto';
-    height:500px;
+    height:570px;
     position: relative;
     border: 1px solid #0b354c;
 }
@@ -334,6 +334,10 @@ background-color: #fafafa;
     left: 0;
     font-family:"Open Sans";
 }
+.pagination .active a {color:#fff !important;}
+.pagination a {
+    color:#0d9dff !important;
+}
 .logoutbutton {
     background: #a9a9a9;
     color:#000 !important;
@@ -363,6 +367,18 @@ height:30px!important;
 {
     height: 100px;
     width: 100px;
+}
+.newband {
+    position: absolute;
+    bottom: 80px;
+    width: 100%;
+    background: #1166DD;
+}
+.newsstrip p { margin-bottom:0px !important; }
+.newsstrip a { color:#fff; }
+.newsstrip {
+    color: #fff;
+    padding-top: 9px;
 }
 .toolbaroption {
     float: left;
@@ -427,7 +443,7 @@ ol.quesList { padding-left:15px; }
     height: 375px;
 }
 .chatbody2 {
-    height: 455px;
+    height: 525px;
     border-left: 1px solid #000;
 }
 ::-webkit-scrollbar-track

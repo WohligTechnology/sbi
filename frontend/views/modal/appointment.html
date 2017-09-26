@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Appointment</h3>
+    <button type="button" class="close"  aria-hidden="true" ng-click="selectappointmentCancel();">&times;</button>
+</div>
+<div class="modal-body" id="modal-body">
+    <form id="appointment_form" name="appointment_form">
+        <div class="form-group">
+            <div class="pull-left" ng-if="selectmobileSuccess==1">
+                <span class="label label-success" >Thank You.</span>
+            </div>
+            <!-- <div ng-repeat="i in items">
+                {{i.name}}
+            </div> -->
+            <!-- <select class="form-control selectbookmark_list" id="selectbookmark_list" >
+
+            </select> -->
+            <input type="text" class="form-control" name="mobileno" id="mobileno" ng-model="u.mobileno" placeholder="Enter Mobile Number" format-phone required ng-maxlength="10" ng-minlength="10">
+            <div class="pull-right" ng-repeat="(field,value) in appointment_form.selectbookmark.$error"  ng-show="appointment_form.mobileno.$touched">
+                <span class="label label-danger" ng-if="value">Please Enter Mobile No</span>
+                <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 10 Digit  No</span>
+            </div>
+            
+            
+            
+            
+            <input class="form-control" id='selectbookmarksubmit' type="submit" name="selectbookmarksubmit" ng-disabled="appointment_form.$invalid"  class="btn btn-primary btn-lg btn-block" value="Submit" ng-click="submitAppointment(u.mobileno);">
+        </div>
+    </form>
+</div>
+<div class="modal-footer hidden">
+    <button class="btn btn-primary" type="button" ng-click="">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="">Cancel</button>
+</div>

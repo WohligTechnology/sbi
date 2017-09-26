@@ -9980,7 +9980,7 @@ header {
 #chat_panel {
   display: none;
   font-family: 'Helvetica Neue','Roboto';
-  height: 500px;
+  height: 570px;
   position: relative;
   border: 1px solid #0b354c; }
 
@@ -10299,6 +10299,12 @@ button.headerbtns:focus {
   left: 0;
   font-family: "Open Sans"; }
 
+.pagination .active a {
+  color: #fff !important; }
+
+.pagination a {
+  color: #0d9dff !important; }
+
 .logoutbutton {
   background: #a9a9a9;
   color: #000 !important; }
@@ -10330,6 +10336,22 @@ button.headerbtns:focus {
 .img-box {
   height: 100px;
   width: 100px; }
+
+.newband {
+  position: absolute;
+  bottom: 80px;
+  width: 100%;
+  background: #1166DD; }
+
+.newsstrip p {
+  margin-bottom: 0px !important; }
+
+.newsstrip a {
+  color: #fff; }
+
+.newsstrip {
+  color: #fff;
+  padding-top: 9px; }
 
 .toolbaroption {
   float: left; }
@@ -10396,7 +10418,7 @@ ol.quesList {
   height: 375px; }
 
 .chatbody2 {
-  height: 455px;
+  height: 525px;
   border-left: 1px solid #000; }
 
 ::-webkit-scrollbar-track {
@@ -10639,7 +10661,7 @@ body {
 
 #suggestionList .ui-widget.ui-widget-content {
   position: absolute;
-  bottom: 48px;
+  bottom: -101px !important;
   top: auto !important;
   margin: 0 0px; }
 
@@ -10928,7 +10950,7 @@ div.scriptData {
   #chat_window_1 {
     width: 50%; }
     #chat_window_1 .panel-body {
-      height: 355px !important; } }
+      height: 410px !important; } }
 
 @media only screen and (max-width: 414px) {
   #chat_window_1 {

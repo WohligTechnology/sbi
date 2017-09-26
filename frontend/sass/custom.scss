@@ -131,7 +131,7 @@ body {
 .char-input input[type='text'] { width: 100%; float: left; padding: 10px;  border: none; outline: none; }
 
 .ui-autocomplete-loading { background: white url("../images/ui-loading.gif") 98% center no-repeat; }
-#suggestionList .ui-widget.ui-widget-content { position: absolute; bottom: 48px; top: auto !important;margin: 0 0px; }
+#suggestionList .ui-widget.ui-widget-content { position: absolute; bottom: -101px !important; top: auto !important;margin: 0 0px; }
 
 .typing-text { font-size:11px; color:#333; visibility: hidden; margin-bottom: 5px; }
 
@@ -418,7 +418,7 @@ div.scriptData {
     {
         width:50% ;
         .panel-body {
-            height:355px !important;
+            height:410px !important;
         }
     }
 }

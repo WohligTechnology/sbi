@@ -1,0 +1,109 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Get Quote</h3>
+    <button type="button" class="close"  aria-hidden="true" ng-click="selectappointmentCancel();">&times;</button>
+</div>
+<div class="modal-body" id="modal-body">
+    <form id="quote_form" name="quote_form" class="">
+        <div class="form-group">
+            <div class="pull-left" ng-if="selectquoteSuccess==1">
+                <span class="label label-success" >Thank You.</span>
+            </div>
+            <!-- <div ng-repeat="i in items">
+                {{i.name}}
+            </div> -->
+            <!-- <select class="form-control selectbookmark_list" id="selectbookmark_list" >
+
+            </select> -->
+            <div class="form-group">
+                <label for="producttype">Product Type</label>
+                <input type="radio" class="" name="producttype[]" id="producttype" ng-model="u.producttype" required ng-init="u.producttype='Family Floater'"> Family Floater
+                <input type="radio" class="" name="producttype[]" id="producttype" ng-model="u.producttype" required ng-init="u.producttype='Individual'"> Individual
+                <input type="radio" class="" name="producttype[]" id="producttype" ng-model="u.producttype" required ng-init="u.producttype='Family Floater'"> Family Individual
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.producttype.$error"  ng-show="quote_form.producttype.$touched">
+                    <span class="label label-danger" ng-if="value">Please Select producttype</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="startdate">Policy Start Date</label>
+                <input type="date" class="form-control" name="startdate" id="startdate" ng-model="u.startdate" required >
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.startdate.$error"  ng-show="quote_form.startdate.$touched">
+                    <span class="label label-danger" ng-if="value">Please Select startdate</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="enddate">Policy End Date</label>
+                <input type="date" class="form-control" name="enddate" id="enddate" ng-model="u.enddate" required >
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.enddate.$error"  ng-show="quote_form.enddate.$touched">
+                    <span class="label label-danger" ng-if="value">Please Select enddate</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="iname">Primary Insured's Name</label>
+                <input type="date" class="form-control" name="iname" id="iname" ng-model="u.iname" required >
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.iname.$error"  ng-show="quote_form.iname.$touched">
+                    <span class="label label-danger" ng-if="value">Please Select Name</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="idate">Primary Insured</label>
+                <input type="date" class="form-control" name="idate" id="idate" ng-model="u.idate" required >
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.idate.$error"  ng-show="quote_form.idate.$touched">
+                    <span class="label label-danger" ng-if="value">Please Select Date</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="insured">Sum Insured (in	Rs	)</label>
+                <select class="form-control" required name="insured" id="insured" ng-model="u.insured">
+                    <option value="">Please Select</option>
+                    <option value="50000">50000</option>
+                    <option value="50000">100000</option>
+                    <option value="50000">200000</option>
+                    <option value="50000">300000</option>
+                    <option value="50000">400000</option>
+                    <option value="50000">500000</option>
+                </select>
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.insured.$error"  ng-show="quote_form.insured.$touched">
+                    <span class="label label-danger" ng-if="value">Please Select sum insured</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="locatiton">Preferred Location Of Treatment</label>
+                <select class="form-control" required name="locatiton" id="locatiton" ng-model="u.locatiton">
+                    <option value="">Please Select</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Ahmedabad">Ahmedabad</option>
+                </select>
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.locatiton.$error"  ng-show="quote_form.locatiton.$touched">
+                    <span class="label label-danger" ng-if="value">Please Select locatiton</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Enter Email</label>
+                <input type="email" class="form-control" name="email" id="email" ng-model="u.email" placeholder="Enter Email"  required >
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.email.$error"  ng-show="quote_form.email.$touched">
+                    <span class="label label-danger" ng-if="field=='email' && value">Please Enter Email </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mobileno">Enter Mobile No</label>
+                <input type="text" class="form-control" name="mobileno" id="mobileno" ng-model="u.mobileno" placeholder="Enter Mobile Number" format-phone required ng-maxlength="10" ng-minlength="10">
+                <div class="pull-right" ng-repeat="(field,value) in quote_form.mobileno.$error"  ng-show="quote_form.mobileno.$touched">
+                    <span class="label label-danger" ng-if="value">Please Enter Mobile No</span>
+                    <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 10 Digit  No</span>
+                </div>
+            </div>
+            
+            
+            
+            <input class="form-control" id='selectbookmarksubmit' type="submit" name="selectbookmarksubmit"   class="btn btn-primary btn-lg btn-block" value="Submit" ng-click="submitQuote(u);">
+        </div>
+    </form>
+</div>
+<div class="modal-footer hidden">
+    <button class="btn btn-primary" type="button" ng-click="">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="">Cancel</button>
+</div>

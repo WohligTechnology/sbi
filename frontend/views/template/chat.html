@@ -101,7 +101,7 @@
                                             <div class="sysChatRes"  ng-repeat="chatRes in list.msg.tiledlist">
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='text'">
                                                     <p class="lastmsg" >
-                                                        <ng-bind-html ng-bind-html = "chatRes.Text|newlines">
+                                                        <ng-bind-html ng-bind-html = "trustedHtml(chatRes.Text);">
                                                             
                                                             {{chatRes.Text}}
                                                         </ng-bind-html>
@@ -143,12 +143,12 @@
                                                 </div>
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='grievance form type'">
                                                     <div class="checkbox">
-                                                        <input type="radio" name="havegr[]" ng-click="havegr(1,$index);" value="1" ng-model="p[$index].havegr"> Have grievance No
-                                                        <input type="radio" name="havegr[]" ng-click="havegr(0,$index);" value="0" ng-model="p[$index].havegr"> Don't Have grievance No
+                                                        <input type="radio" name="havegr[]" ng-click="havegr(1,$index);" value="1" ng-model="p[$index].havegr"> Have SR No
+                                                        <input type="radio" name="havegr[]" ng-click="havegr(0,$index);" value="0" ng-model="p[$index].havegr"> Don't Have SR No
                                                     </div>
                                                     <p class="lastmsg" >
                                                         <ng-bind-html style="display:none;" class="showgrform{{$index}}">
-                                                            <label for="p[$index].gr_no">Please enter your Grievance number </label>
+                                                            <label for="p[$index].gr_no">Please enter your Service Request number </label>
                                                             <input type="text"  ng-model="p[$index].gr_no"  class="form-control gr_no{{$index}}" name="gr_no" id="gr_no" format-gr >
                                                             <br>
                                                             
@@ -199,7 +199,7 @@
                                                     <!-- <div class="form-group">
                                                         <input ng-model="search.query" type="text" placeholder="Search" class="form-control searchpolicy" autofocus ng-change="getpolicy(search.query);">
                                                     </div> -->
-                                                    <table class="table table-striped">
+                                                    <table class="table table-hover">
                                                         <thead> 
                                                             <tr>
                                                                 <th>
@@ -416,100 +416,14 @@
                                                         <button type="submit" class="btn btn-default" ng-disabled="createpolicy.$invalid" ng-click="createpolicysubmit(f.policyno,f.inception_date,f.expiry_date,f.stamount,f.agent_name,f.prem_amount,f.agent_no,f.cust_no,f.cust_email);">Add</button>
                                                     </form>
                                                 </div>
-                                                <div class="chatType" ng-if="list.msg.tiledlist[0].type==='insurance type'">
-                                                    <form class="calcform"  name="calcform" id="calcform">
-                                                        <div class="form-group" ng-if="calcformsuccess==1">
-                                                            <div class="pull-left col-md-12" >
-                                                                <span class="label label-success" >Data Submitted Successfully.</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            
-                                                            <label for="producttype" class="">Product Type</label> 
-                                                            <div class="checkbox">
-                                                                <input type="radio" class="form-control" id="producttype" name="producttype[]" placeholder="Product Type" ng-model="f.producttype"  required >
-                                                                <input type="radio" class="form-control" id="producttype" name="producttype[]" placeholder="Product Type" ng-model="f.producttype"  required >
-                                                            </div>
-                                                            <div class="pull-right" ng-repeat="(field,value) in calcform.producttype.$error" ng-show="calcform.producttype.$touched">
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Policy No</span>
-                                                                <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 16 Digit Policy No</span>
-                                                            </div> 
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="inception_date">Inception Date</label> 
-                                                            <input type="date" name="inception_date" class="form-control" id="inception_date" placeholder="" ng-model="f.inception_date" required>
-                                                            <div class="pull-right" ng-repeat="(field,value) in createpolicy.inception_date.$error" ng-show="createpolicy.inception_date.$touched">
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Inception date</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="expiry_date">Expiry Date</label> 
-                                                            <input type="date" name="expiry_date" class="form-control" id="expiry_date" placeholder="" required ng-model="f.expiry_date">
-                                                            <div class="pull-right" ng-repeat="(field,value) in createpolicy.expiry_date.$error" ng-show="createpolicy.expiry_date.$touched">
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Expiry date</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="stamount">Service TAX Amount</label> 
-                                                            <input type="number" name="stamount" class="form-control" id="stamount" placeholder="" required ng-model="f.stamount">
-                                                            <div class="pull-right" ng-repeat="(field,value) in createpolicy.stamount.$error" ng-show="createpolicy.stamount.$touched">
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Service TAX Amount</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="agent_name">Agent Name</label> 
-                                                            <input type="text" name="agent_name" class="form-control" id="agent_name" placeholder="" required ng-model="f.agent_name">
-                                                            <div class="pull-right" ng-repeat="(field,value) in createpolicy.agent_name.$error" ng-show="createpolicy.agent_name.$touched">
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Agent Name</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="prem_amount">Premium Amount</label> 
-                                                            <input type="number" name="prem_amount" class="form-control" id="prem_amount" placeholder="" required ng-model="f.prem_amount">
-                                                            <div class="pull-right" ng-repeat="(field,value) in createpolicy.prem_amount.$error" ng-show="createpolicy.prem_amount.$touched">
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Premium Amount</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="agent_no">Agent Contact No</label> 
-                                                            <input type="text" name="agent_no" class="form-control" id="agent_no" placeholder="" required ng-model="f.agent_no" format-phone ng-maxlength="10" ng-minlength="10">
-                                                            <div class="pull-right" ng-repeat="(field,value) in createpolicy.agent_no.$error" ng-show="createpolicy.agent_no.$touched">
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Agent No</span>
-                                                                <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 10 Digit No</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="cust_no">Customer Contact No</label> 
-                                                            <input type="text" name="cust_no" class="form-control" id="cust_no" placeholder="" required ng-model="f.cust_no" format-phone ng-maxlength="10" ng-minlength="10">
-                                                            <div class="pull-right" ng-repeat="(field,value) in createpolicy.cust_no.$error" ng-show="createpolicy.cust_no.$touched" >
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter Customer Contact No</span>
-                                                                <span class="label label-danger" ng-if="field=='minlength' && value">Please Enter 10 Digit  No</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="cust_no">Customer Email</label> 
-                                                            <input type="email" name="cust_email" class="form-control" id="cust_email" placeholder="" required ng-model="f.cust_email">
-                                                            <div class="pull-right" ng-repeat="(field,value) in createpolicy.cust_email.$error" ng-show="createpolicy.cust_email.$touched">
-                                                                <span class="label label-danger" ng-if="field=='required' && value">Please Enter EmailID</span>
-                                                                <span class="label label-danger" ng-if="field=='email' && value">Please Enter Valid Email</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group" ng-if="policysuccess==-1">
-                                                            <div class="pull-right"  >
-                                                                <span class="label label-danger">Please Try Again.</span>
-                                                            </div>
-                                                        </div>
-                                                        <button type="submit" class="btn btn-default" ng-disabled="createpolicy.$invalid" ng-click="createpolicysubmit(f.policyno,f.inception_date,f.expiry_date,f.stamount,f.agent_name,f.prem_amount,f.agent_no,f.cust_no,f.cust_email);">Add</button>
-                                                    </form>
-                                                </div>
                                                 <div class="chatType" ng-if="list.msg.tiledlist[0].type==='DTHyperlink'">
                                                     
                                                     <ng-bind-html ng-if="chatRes.Text != ''" ng-bind-html="chatRes.Text|newlines">
-                                                        <p class="lastmsg" >
+                                                        <p class="lastmsg"  >
                                                             {{chatRes.Text}}     
                                                         </p>
                                                     </ng-bind-html>
-                                                    <ng-bind-html ng-if="chatRes.Process.length > 0 "  ng-repeat="p in chatRes.Process" ng-bind-html="p">
+                                                    <ng-bind-html ng-if="chatRes.Process.length > 0 "  ng-repeat="p in chatRes.Process" ng-bind-html="trustedHtml(p)">
                                                     <div class=" lastmsg"  >
                                                         {{p}}
                                                     </div>
@@ -845,6 +759,19 @@
                                     </uib-tabset>
                                 </div>
                             </div> -->
+                            <div class="row newband" ng-if="cur_h != ''">
+                                <div class="col-md-12">
+                                    <div class="newsstrip">
+                                        <marquee>
+                                            <p>
+                                                {{cur_h}}
+                                                <a ng-href="{{cur_i}}"  data-fancybox="news" rel="gallary" fancybox title="{{cur_b}}" data-caption="{{cur_b}}">Click Here</a>
+                                            </p>
+                                            
+                                        </marquee>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="panel-footer row" >
                             <div class="form-group">

@@ -13,11 +13,11 @@ var schema = new Schema({
         type:String
     },
     response: {
-        topic : String,
-		sessionId : Number,
-		type : String,
-		Text:String,
-		//type: mongoose.Schema.Types.Object
+        // topic : String,
+		// sessionId : Number,
+		// type : String,
+		// Text:String,
+		type: mongoose.Schema.Types.Object
     }
 });
 
@@ -38,18 +38,18 @@ var model = {
     viewbookmark: function (data, callback) {
         console.log("data", data);
         var userid = data.userid;
-        Chathistory.find({
-			user_id: userid
-        /*{$group: { _id: "$sessionId", count:{$sum:1} } },
-        { $match: { user_id: userid } }*/
-		}).exec(function (err, found) {
+        Chathistory.aggregate([
+			//user_id: userid
+        {$group: { _id: "$sessionId", count:{$sum:1} } },
+        { $match: { user_id: userid } }
+		]).exec(function (err, found) {
             if (err) {
                 callback(err, null);
             } 
             else {
                 if (found) {
-					var results = _.groupBy(found, "sessionId");
-                    callback(null, results);
+					//var results = _.groupBy(found, "sessionId");
+                    callback(null, found);
                 } else {
                     callback({
                         message: "-1"
