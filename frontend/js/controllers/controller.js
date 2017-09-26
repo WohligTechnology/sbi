@@ -193,9 +193,9 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.submitQuote = function(obj) {
             console.log(obj);
             $rootScope.selectquoteSuccess=1;
-            $timeout(function(){
-                $rootScope.selectquoteCancel();
-            },2000);
+            // $timeout(function(){
+            //     $rootScope.selectquoteCancel();
+            // },2000);
             
             
             //alert("Thank You");
