@@ -1234,7 +1234,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             {
                 if( $rootScope.answers )
                 {
-                    $rootScope.pushAutoMsg($rootScope.autolistid,$rootScope.chatText,$rootScope.answers);
+                    $rootScope.pushAutoMsg($rootScope.autolistid,$(".chatinput").val(),$rootScope.answers);
                     $rootScope.autocompletelist = [];
                 }
                 else if($rootScope.autolistid=="" || $rootScope.autolistid == null)
