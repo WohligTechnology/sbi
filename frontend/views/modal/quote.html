@@ -3,11 +3,14 @@
     <button type="button" class="close"  aria-hidden="true" ng-click="selectappointmentCancel();">&times;</button>
 </div>
 <div class="modal-body" id="modal-body">
-    <form id="quote_form" name="quote_form" class="">
+    <div class="form-group">
+        <div class="pull-left" ng-if="selectquoteSuccess==1">
+            <span class="label label-success" >Thank You.Amount Rs. 5000</span>
+        </div>
+    </div>
+    <form id="quote_form" name="quote_form" class="" ng-if="selectquoteSuccess = 0">
         <div class="form-group">
-            <div class="pull-left" ng-if="selectquoteSuccess==1">
-                <span class="label label-success" >Thank You.</span>
-            </div>
+            
             <!-- <div ng-repeat="i in items">
                 {{i.name}}
             </div> -->

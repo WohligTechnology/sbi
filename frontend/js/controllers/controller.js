@@ -617,13 +617,15 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $rootScope.pushSystemMsg = function(id,value) {
             $rootScope.chatmsgid = id;
             $rootScope.chatmsg = value;
-            console.log(value);
+            
             $rootScope.chatlist.push({id:"id",msg:value,position:"left",curTime: $rootScope.getDatetime()});
             //$.jStorage.set("chatlist",$rootScope.chatlist);
             $timeout(function(){
                 $rootScope.scrollChatWindow();
             });
-            
+            $timeout(function(){
+                $rootScope.autocompletelist=[];
+            },2000);
         };
         $scope.logout = function()
         {
