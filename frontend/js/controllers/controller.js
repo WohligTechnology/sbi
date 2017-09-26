@@ -160,7 +160,14 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             //console.log("dismissing");
             $rootScope.$viewmodalInstance2.dismiss('cancel');
         };
-
+        $rootScope.languagelist = [
+            {id:"en" , name:"English"},
+            {id:"hi" , name:"Hindi"},
+            {id:"mr" , name:"Marathi"},
+            {id:"gu" , name:"Gujarati"},
+            {id:"ta" , name:"Tamil"},
+        ];
+        $rootScope.selectedLanguage = $rootScope.languagelist[0];
         $rootScope.$viewmodalInstance3 = {};
         $rootScope.selectquoteSuccess = 0;
         //$rootScope.selectbookmarkerror = 0;
@@ -168,7 +175,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             $rootScope.$viewmodalInstance3 = $uibModal.open({
                 scope: $rootScope,
                 animation: true,
-                size: 'lg',
+                size: 'sm',
                 templateUrl: 'views/modal/quote.html',
                 // resolve: {
                 //     items: function () {
@@ -439,7 +446,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         };
         if($.jStorage.get("isLoggedin"))
             $rootScope.isLoggedin = true;
-        $scope.login = function(name,email)
+        $scope.login = function(name,email,language)
         {
             $scope.formData = {uname:name,uemail:email,user_input:"",csrfmiddlewaretoken:$rootScope.getCookie("csrftoken"),auto_id:"",auto_value:"",user_id:$cookies.get("session_id")};
             
@@ -498,6 +505,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                             $.jStorage.set("sessionid",value.profile_id);
                             //console.log(value.profile_id);
                         }
+                        $.jStorage.set("language", language.id);
                     });
                     
                 }
@@ -1030,7 +1038,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                 $timeout(function(){
                     $(".chatinput").val("");
                 });
-                console.log($rootScope.newsid);
+                //console.log($rootScope.newsid);
                 if($rootScope.newsid)
                 {
                     if($rootScope.newslist.headline.length > 0) 
@@ -1043,7 +1051,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                         cur_b = $rootScope.cur_b;
                         cur_h = $rootScope.cur_h;
                         cur_i = $rootScope.cur_i;
-                        console.log(cur_b);
+                        //console.log(cur_b);
                         $(".fancybox-caption").html(cur_b);
                         // _.remove($rootScope.newslist.body, function(cur_b) {
                               
@@ -1078,6 +1086,7 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
                     angular.forEach(data.data.tiledlist, function(value, key) {
                         if(value.type=="text")
                         {
+                            data.data.tiledlist[0].Text=$scope.trustedHtml(data.data.tiledlist[0].Text);
                         	$rootScope.pushSystemMsg(0,data.data);
                             $rootScope.showMsgLoader = false;
                             return false;

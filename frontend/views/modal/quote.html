@@ -17,8 +17,8 @@
             <div class="form-group">
                 <label for="producttype">Product Type</label>
                 <input type="radio" class="" name="producttype[]" id="producttype" ng-model="u.producttype" required ng-init="u.producttype='Family Floater'"> Family Floater
-                <input type="radio" class="" name="producttype[]" id="producttype" ng-model="u.producttype" required ng-init="u.producttype='Individual'"> Individual
-                <input type="radio" class="" name="producttype[]" id="producttype" ng-model="u.producttype" required ng-init="u.producttype='Family Floater'"> Family Individual
+                <input type="radio" class="" name="producttype[]" id="producttype" ng-model="u.producttype" required "> Individual
+                <input type="radio" class="" name="producttype[]" id="producttype" ng-model="u.producttype" required "> Family Individual
                 <div class="pull-right" ng-repeat="(field,value) in quote_form.producttype.$error"  ng-show="quote_form.producttype.$touched">
                     <span class="label label-danger" ng-if="value">Please Select producttype</span>
                 </div>
