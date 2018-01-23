@@ -1,5 +1,5 @@
 myApp.factory('apiService', function ($http, $q, $timeout,$httpParamSerializer,$httpParamSerializerJQLike) {
-    adminurl2 = "https://cingulariti.com/sbibackend/";
+    adminurl2 = "https://cingulariti.com:8094/sbibackend/";
     var adminurl3 = "http://localhost/api/";
     var adminurl3 = "https://cingulariti.com:9001/api/";
     
